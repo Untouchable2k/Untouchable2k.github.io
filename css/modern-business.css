@@ -90,7 +90,7 @@ body {
             overflow-x: auto; /* Ensure scrolling is always enabled */
         }
         .image-container img {
-            max-width: 4%;
+            max-width: 7%;
 	    width: 100%; /* Full width of the parent container */
 	    display: flex; /* Use flexbox to layout children (images) */
 	    flex-wrap: wrap; /* Prevent wrapping of items */
