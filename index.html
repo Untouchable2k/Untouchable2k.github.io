@@ -91,14 +91,14 @@
 		<h2>Left Section</h2>
 		<p>This is the left section where you can place some information.</p>
 		
+	<div id="app2">	
 		
-		
-  <button @click="clkBuyTickets" id="buttonBuyTickets">Buy Tickets</button></br>
-    <label for="buyTicket">Buy Ticket(s):</label>
-    <input id="buyTicketInput" type="number" min="0" placeholder="Ticket Amount" value="1">
+  <button id="buttonBuyTickets">Buy Tickets</button></br>
+    <label for="buyTicket">Buy Ticket(s):</label>  
+    <input type="number" min="0" v-model.number="buyTicketAmount" placeholder="Ticket Amount">
    <div id="buyTicketAmt"> Total # of Tickets Sold</div>
    <div id="txLeft">Tickets Left: 1</div>
-   <div id="WinningChance">Winning Chance: 1:10</div>
+   <div id="WinningChance">Winning Chance: {{ winningChance }}</div>
    <div id="Jackpot">Jackpot 1000 BNBTC</div>
    <br></br>
    <div id="1StatBreakDown">%% Winning Ticket Holder</div>
@@ -109,13 +109,18 @@
 <div id="recentwinners2">Winner #2 0x02</div>
 <div id="recentwinners3">Winner #3 0x03</div>
 
-<div id="app2">
+<button id="test-btn4">Test FETCH STUFF	</button>
+
+<div id="app23" class="image-container">
+  <div v-for="(row, rowIndex) in displayedRows" :key="rowIndex">
+    <div class="image-block">
+      <h2>Round #{{ row.roundNumber }} Winner: {{ row.WinnerAddress.substring(0,14) }}  </h2>
+    </div>
+  </div>
   <button @click="prevPage" :hidden="currentPage <= 0">Previous</button>
   <button @click="nextPage" :disabled="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
-</div>
-	
-		
-		
+</div>	
+</div>		
 	    </div>
 	    <div class="column2 middle-column">
 		<h2>Middle Section</h2>
@@ -202,6 +207,7 @@
 
 <button id="test-btn">Test Button</button>
 <button id="test-btn2">Test Button2	</button>
+<button id="test-btn3">Test FETCHSHIT	</button>
 
 <div id="app" class="image-container">
   <div v-for="(row, rowIndex) in displayedRows" :key="rowIndex">
@@ -294,12 +300,27 @@
   data() {
     return {
       imageRows: [
-        {roundNumber: 348, images: new Array(9).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' }))},
-        {roundNumber: 349, images: new Array(9).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' }))}
+        {roundNumber: -1, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' }))},
+        {roundNumber: -2, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' }))}
       ], 
       currentPage: 0,
       rowsPerPage: 10,
-      swapImageName: 'http://127.0.0.1:8080/img/zkBitcoin.png'
+      swapImageName: 'http://127.0.0.1:8080/img/zkBitcoin.png',
+      provider: null,
+      winnerImages: 'http://127.0.0.1:8080/img/image1.jpg',
+      contractAddress: '0x6b2Ca4Bf1def48Aa9F3Ff6FEa9D46004c1D9720b',
+      abi: [{
+  "anonymous": false,
+  "inputs": [
+    {"indexed": true, "name": "winner", "type": "address"},
+    {"indexed": false, "name": "ticketNumber", "type": "uint256"},
+    {"indexed": false, "name": "roundId", "type": "uint256"}
+  ],
+  "name": "WinnerSelected",
+  "type": "event"
+}
+],
+      contract: null,
     };
   },
   computed: {
@@ -312,11 +333,17 @@
       return [...this.imageRows].reverse().slice(start, end);
     }
   },
+  mounted() {
+    this.initializeEthereum();
+  },
   methods: {
     swapImage(rowIndex, imageIndex) {
       this.imageRows[rowIndex].images[imageIndex].url = this.swapImageName;
     },
-    addImageRow(newRow) {
+    swapImage2(rowIndex, imageIndex) {
+      this.imageRows[rowIndex].images[imageIndex].url = this.winnerImages;
+    },
+    async addImageRow(newRow) {
       this.imageRows.push(newRow);
     },
     testOutside(rowIndex, imageIndex) {
@@ -331,6 +358,23 @@
       // Add the new row at the beginning of the imageRows array
       this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
     },
+    async testInside(rowIndex, imageIndex, roundNumber) {
+	var test = rowIndex -1;
+      // Create a new row object with the roundNumber incremented and new images array
+      const newRoundNumber = roundNumber;
+      const newImages = this.imageRows[0].images.map(image => {
+        return { url: this.swapImageName };  // Set the swap image for each image in the new row
+      });
+      
+      console.log("Round Number : ", roundNumber);
+      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
+	if(roundNumber != this.imageRows[this.imageRows.length-1].roundNumber){
+	
+	      // Add the new row at the beginning of the imageRows array
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
+	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
+	}
+    },
     nextPage() {
       if ((this.currentPage + 1) * this.rowsPerPage < this.imageRows.length) {
         this.currentPage++;
@@ -340,7 +384,61 @@
       if (this.currentPage > 0) {
         this.currentPage--;
       }
-    }
+    },
+    initializeEthereum() {
+      // Set up a provider
+      this.provider = new ethers.providers.JsonRpcProvider('https://bsc-testnet-rpc.publicnode.com');
+
+      // Create a contract instance
+      this.contract = new ethers.Contract(this.contractAddress, this.abi, this.provider);
+    },
+    async getCurrentBlock() {
+      try {
+        const currentBlock = await this.provider.getBlockNumber();
+
+        console.log('Current Block:', currentBlock);
+        return currentBlock;
+
+        // Use targetBlock as needed, e.g., fetching logs from this block onwards
+      } catch (error) {
+        console.error('Error getting block number:', error);
+      }
+    },
+    async fetchLogs() {
+      try {
+        var blockNumz = await this.getCurrentBlock();
+        var Minus = blockNumz - 40000;
+        const logs = await this.provider.getLogs({
+          fromBlock: Minus,
+          toBlock: blockNumz,
+          address: this.contractAddress,
+          topics: ["0x2f1b5357ef4ab89f6b09b3fa72e170d4648af7252951a8549dee6c3924baa4f1"]
+        });
+
+
+
+
+	for(var x=0; x< logs.length; x++){
+		
+		console.log(logs);
+		var dataz = logs[x].data;
+		console.log("zero data: ", dataz);
+		console.log("zero data: ", dataz.substring(0,66));
+		console.log("zero data2: ", dataz.substring(67,131));
+		var start = this.imageRows.length +1;
+		var variable = parseInt(dataz.substring(0,66));
+		var roundID = parseInt(dataz.substring(67,131));
+		console.log("data 0 variable: ", variable);
+		console.log("data 0 roundID: ", roundID);
+		console.log("data 0 start: ", start);
+		this.testInside(start, variable-1, roundID);
+		// Process logs or update data
+	}
+      } catch (error) {
+      
+        console.error('Error fetching logs:', error);
+      }
+    }    
   }
 });
     
@@ -356,15 +454,186 @@
     app.testOutside(1, 2); // Call the method with specific parameters
   });
     
+    document.getElementById('test-btn3').addEventListener('click', function() {
+    app.fetchLogs(); // Call the method with specific parameters
+  });
     
     
     
     
     
     
+   const app2 = new Vue({
+  el: '#app2',
+  data() {
+    return {
+      imageRows: [
+        {roundNumber: -1, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' })),WinnerAddress: "0x012301230012303888888"},
+        {roundNumber: -2, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' })),WinnerAddress: "0x012301230012303888888"}
+      ], 
+      currentPage: 0,
+      rowsPerPage: 10,
+      swapImageName: 'http://127.0.0.1:8080/img/zkBitcoin.png',
+      provider: null,
+      winnerImages: 'http://127.0.0.1:8080/img/image1.jpg',
+      contractAddress: '0x6b2Ca4Bf1def48Aa9F3Ff6FEa9D46004c1D9720b',
+      totalTicketsSold: 0,
+      buyTicketAmount: 1, // Set initial value here
+      maxTickets: 10,
+      abi: [{
+  "anonymous": false,
+  "inputs": [
+    {"indexed": true, "name": "winner", "type": "address"},
+    {"indexed": false, "name": "ticketNumber", "type": "uint256"},
+    {"indexed": false, "name": "roundId", "type": "uint256"}
+  ],
+  "name": "WinnerSelected",
+  "type": "event"
+}
+],
+      contract: null,
+    };
+  },
+  computed: {
+	    reversedImageRows() {
+	      return [...this.imageRows].reverse(); // Create a copy and reverse it
+	      },
+	      displayedRows() {
+	      const start = this.currentPage * this.rowsPerPage;
+	      const end = start + this.rowsPerPage;
+	      return [...this.imageRows].reverse().slice(start, end);
+	    },
+	    
+    ticketsLeft() {
+      return this.maxTickets - this.totalTicketsSold;
+    },
+    winningChance() {
+      let chance = (this.buyTicketAmount / 10) * 100;
+      return `${chance.toFixed(2)}%`;
+    }
+  },
+  mounted() {
+    this.initializeEthereum();
+  },
+  methods: {
+    swapImage(rowIndex, imageIndex) {
+      this.imageRows[rowIndex].images[imageIndex].url = this.swapImageName;
+    },
+    swapImage2(rowIndex, imageIndex) {
+      this.imageRows[rowIndex].images[imageIndex].url = this.winnerImages;
+    },
+    async addImageRow(newRow) {
+      this.imageRows.push(newRow);
+    },
+    testOutside(rowIndex, imageIndex) {
+      this.swapImage(rowIndex, imageIndex);  // This swaps the image in the specified row and index.
+
+      // Create a new row object with the roundNumber incremented and new images array
+      const newRoundNumber = this.imageRows[rowIndex].roundNumber + 1;
+      const newImages = this.imageRows[rowIndex].images.map(image => {
+        return { url: this.swapImageName };  // Set the swap image for each image in the new row
+      });
+
+      // Add the new row at the beginning of the imageRows array
+      this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
+    },
+    async testInside(rowIndex, imageIndex, roundNumber, winnerz) {
+	var test = rowIndex -1;
+      // Create a new row object with the roundNumber incremented and new images array
+      const newRoundNumber = roundNumber;
+      const newImages = this.imageRows[0].images.map(image => {
+        return { url: this.swapImageName };  // Set the swap image for each image in the new row
+      });
+      
+      console.log("Round Number : ", roundNumber);
+      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
+	if(roundNumber != this.imageRows[this.imageRows.length-1].roundNumber){
+	
+	      // Add the new row at the beginning of the imageRows array
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages, WinnerAddress: winnerz });
+	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
+	}
+    },
+    nextPage() {
+      if ((this.currentPage + 1) * this.rowsPerPage < this.imageRows.length) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+      }
+    },
+    initializeEthereum() {
+      // Set up a provider
+      this.provider = new ethers.providers.JsonRpcProvider('https://bsc-testnet-rpc.publicnode.com');
+
+      // Create a contract instance
+      this.contract = new ethers.Contract(this.contractAddress, this.abi, this.provider);
+    },
+    async getCurrentBlock() {
+      try {
+        const currentBlock = await this.provider.getBlockNumber();
+
+        console.log('Current Block:', currentBlock);
+        return currentBlock;
+
+        // Use targetBlock as needed, e.g., fetching logs from this block onwards
+      } catch (error) {
+        console.error('Error getting block number:', error);
+      }
+    },
+    async fetchLogs() {
+      try {
+        var blockNumz = await this.getCurrentBlock();
+        var Minus = blockNumz - 40000;
+        const logs = await this.provider.getLogs({
+          fromBlock: Minus,
+          toBlock: blockNumz,
+          address: this.contractAddress,
+          topics: ["0x2f1b5357ef4ab89f6b09b3fa72e170d4648af7252951a8549dee6c3924baa4f1"]
+        });
+
+
+
+
+	for(var x=0; x< logs.length; x++){
+		
+		console.log(logs);
+		var winnerz = logs[x].topics[1].substring(26,66);
+		var winnerzWhole = logs[x].topics[1];
+		console.log("Winer: ",winnerz);
+		console.log("Winer W:  ",winnerzWhole);
+		winnerz = "0x"+winnerz;
+		var dataz = logs[x].data;
+		console.log("zero data: ", dataz);
+		console.log("zero data: ", dataz.substring(0,66));
+		console.log("zero data2: ", dataz.substring(67,131));
+		var start = this.imageRows.length +1;
+		var variable = parseInt(dataz.substring(0,66));
+		var roundID = parseInt(dataz.substring(67,131));
+		console.log("data 0 variable: ", variable);
+		console.log("data 0 roundID: ", roundID);
+		console.log("data 0 start: ", start);
+		this.testInside(start, variable-1, roundID, winnerz);
+		// Process logs or update data
+	}
+      } catch (error) {
+      
+        console.error('Error fetching logs:', error);
+      }
+    }    
+  }
+});
     
     
     
+    
+    
+    
+    document.getElementById('test-btn4').addEventListener('click', function() {
+    app2.fetchLogs(); // Call the method with specific parameters
+  });
     
    
     
