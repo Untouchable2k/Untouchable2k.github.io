@@ -95,30 +95,26 @@
 		
   <button id="buttonBuyTickets">Buy Tickets</button></br>
     <label for="buyTicket">Buy Ticket(s):</label>  
-    <input type="number" min="0" v-model.number="buyTicketAmount" placeholder="Ticket Amount">
-   <div id="buyTicketAmt"> Total # of Tickets Sold</div>
+    <input type="number" min="1" max="10" v-model.number="buyTicketAmount" placeholder="Ticket Amount">
+   <div id="buyTicketAmt"> Total # of Tickets Sold</div> 
    <div id="txLeft">Tickets Left: 1</div>
    <div id="WinningChance">Winning Chance: {{ winningChance }}</div>
    <div id="Jackpot">Jackpot 1000 BNBTC</div>
    <br></br>
-   <div id="1StatBreakDown">%% Winning Ticket Holder</div>
- <div id="2StatBreakDown">%% BNBitcoin.BNB</div>
- <div id="3StatBreakDown">%% Application Developer</div>
+   <div id="1StatBreakDown">80% Winning Ticket Holder</div>
+ <div id="2StatBreakDown">10% BNBitcoin.BNB</div>
+ <div id="3StatBreakDown">10% Application Developer</div>
    <br></br>
-<div id="recentwinners">Winner #1 0x01</div>
-<div id="recentwinners2">Winner #2 0x02</div>
-<div id="recentwinners3">Winner #3 0x03</div>
-
-<button id="test-btn4">Test FETCH STUFF	</button>
+<button id="test-btn4">Test FETCH Winners CLICK</button>
 
 <div id="app23" class="image-container">
   <div v-for="(row, rowIndex) in displayedRows" :key="rowIndex">
     <div class="image-block">
       <h2>Round #{{ row.roundNumber }} Winner: {{ row.WinnerAddress.substring(0,14) }}  </h2>
     </div>
-  </div>
+  </div></br>
   <button @click="prevPage" :hidden="currentPage <= 0">Previous</button>
-  <button @click="nextPage" :disabled="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
+  <button @click="nextPage" :hidden="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
 </div>	
 </div>		
 	    </div>
@@ -132,7 +128,7 @@
     <a href="removeLiq.html"style="font-size:1.1em">Click here to remove Liquidity from ABAS/ETH</a>
 
 <div id="YourAddress">Your connected address: ? Connect Wallet</div>
-<div id="reloadTimer">Next reload in: 120 seconds</div>
+<div id="reloadTimer">Next reload in: 20 seconds</div>
 <div id="YourBalanceABAS">Your ABAS Balance: ? Connect Wallet</div>
 		
 		<div id="YourBalanceETH">Your ETH Balance: ? Connect Wallet</div>
@@ -205,9 +201,7 @@
 
 -->
 
-<button id="test-btn">Test Button</button>
-<button id="test-btn2">Test Button2	</button>
-<button id="test-btn3">Test FETCHSHIT	</button>
+<button id="test-btn3">Test Fetch Your Results</button>
 
 <div id="app" class="image-container">
   <div v-for="(row, rowIndex) in displayedRows" :key="rowIndex">
@@ -219,7 +213,7 @@
     </div>
   </div>
   <button @click="prevPage" :hidden="currentPage <= 0">Previous</button>
-  <button @click="nextPage" :disabled="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
+  <button @click="nextPage" :hidden="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
 </div>
 
 
@@ -235,7 +229,7 @@
     <a href="removeLiq.html"style="font-size:1.1em">Click here to remove Liquidity from ABAS/ETH</a>
 <div>
 <div id="YourAddress">Your connected address: ? Connect Wallet</div>
-<div id="reloadTimer">Next reload in: 120 seconds</div>
+<div id="reloadTimer">Next reload in: 20 seconds</div>
 <div id="YourBalanceABAS">Your ABAS Balance: ? Connect Wallet</div>
 <div id="YourBalanceETH">Your ETH Balance: ? Connect Wallet</div>
 <div id="YourBalanceLP">Your LP Balance: ? Connect Wallet</div>
@@ -300,6 +294,8 @@
   data() {
     return {
       imageRows: [
+      ],
+      imageRows2: [
         {roundNumber: -1, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' }))},
         {roundNumber: -2, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' }))}
       ], 
@@ -362,14 +358,18 @@
 	var test = rowIndex -1;
       // Create a new row object with the roundNumber incremented and new images array
       const newRoundNumber = roundNumber;
-      const newImages = this.imageRows[0].images.map(image => {
-        return { url: this.swapImageName };  // Set the swap image for each image in the new row
-      });
+      const newImages = new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/zkBitcoin.png' }));  // Set the swap image for each image in the new row
       
       console.log("Round Number : ", roundNumber);
-      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
-	if(roundNumber != this.imageRows[this.imageRows.length-1].roundNumber){
+      if(this.imageRows.length  < 1 ){
+      
+      
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
+	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
+      
+      }else if(roundNumber > this.imageRows[this.imageRows.length-1].roundNumber){
 	
+      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
 	      // Add the new row at the beginning of the imageRows array
 	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
 	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
@@ -444,15 +444,6 @@
     
     
     
-    document.getElementById('test-btn2').addEventListener('click', function() {
-    app.testOutside(2, 0); // Call the method with specific parameters
-    
-  });
-    
-    
-    document.getElementById('test-btn').addEventListener('click', function() {
-    app.testOutside(1, 2); // Call the method with specific parameters
-  });
     
     document.getElementById('test-btn3').addEventListener('click', function() {
     app.fetchLogs(); // Call the method with specific parameters
@@ -468,6 +459,8 @@
   data() {
     return {
       imageRows: [
+      ], 
+      imageRows2: [
         {roundNumber: -1, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' })),WinnerAddress: "0x012301230012303888888"},
         {roundNumber: -2, images: new Array(10).fill(null).map(() => ({ url: 'http://127.0.0.1:8080/img/image1.jpg' })),WinnerAddress: "0x012301230012303888888"}
       ], 
@@ -525,32 +518,23 @@
     async addImageRow(newRow) {
       this.imageRows.push(newRow);
     },
-    testOutside(rowIndex, imageIndex) {
-      this.swapImage(rowIndex, imageIndex);  // This swaps the image in the specified row and index.
-
-      // Create a new row object with the roundNumber incremented and new images array
-      const newRoundNumber = this.imageRows[rowIndex].roundNumber + 1;
-      const newImages = this.imageRows[rowIndex].images.map(image => {
-        return { url: this.swapImageName };  // Set the swap image for each image in the new row
-      });
-
-      // Add the new row at the beginning of the imageRows array
-      this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
-    },
     async testInside(rowIndex, imageIndex, roundNumber, winnerz) {
 	var test = rowIndex -1;
       // Create a new row object with the roundNumber incremented and new images array
       const newRoundNumber = roundNumber;
-      const newImages = this.imageRows[0].images.map(image => {
-        return { url: this.swapImageName };  // Set the swap image for each image in the new row
-      });
-      
+
       console.log("Round Number : ", roundNumber);
-      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
-	if(roundNumber != this.imageRows[this.imageRows.length-1].roundNumber){
+      if(this.imageRows.length < 1){
+      
+      
+	      await this.addImageRow({ roundNumber: newRoundNumber, WinnerAddress: winnerz });
+	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
+      
+	}else if(roundNumber > this.imageRows[this.imageRows.length-1].roundNumber){
 	
+      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
 	      // Add the new row at the beginning of the imageRows array
-	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages, WinnerAddress: winnerz });
+	      await this.addImageRow({ roundNumber: newRoundNumber, WinnerAddress: winnerz });
 	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
 	}
     },
@@ -1183,7 +1167,7 @@
 		await reloadData();
 		// The countdown is reset here via updateCountdown at the start of each data reload cycle
 		updateCountdown(); 
-	    }, 120000); // Set to reload data every 15 seconds
+	    }, 120000); // Set to reload data every 120 seconds
 
 	    // Initial load and start of the countdown
 	    reloadData();
@@ -1308,4 +1292,3 @@
     </script>
 </body>
 </html>
-
