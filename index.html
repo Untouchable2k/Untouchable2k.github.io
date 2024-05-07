@@ -132,7 +132,7 @@
     <a href="removeLiq.html"style="font-size:1.1em">Click here to remove Liquidity from ABAS/ETH</a>
 
 <div id="YourAddress">Your connected address: ? Connect Wallet</div>
-<div id="reloadTimer">Next reload in: 20 seconds</div>
+<div id="reloadTimer">Next reload in: 120 seconds</div>
 <div id="YourBalanceABAS">Your ABAS Balance: ? Connect Wallet</div>
 		
 		<div id="YourBalanceETH">Your ETH Balance: ? Connect Wallet</div>
@@ -235,7 +235,7 @@
     <a href="removeLiq.html"style="font-size:1.1em">Click here to remove Liquidity from ABAS/ETH</a>
 <div>
 <div id="YourAddress">Your connected address: ? Connect Wallet</div>
-<div id="reloadTimer">Next reload in: 20 seconds</div>
+<div id="reloadTimer">Next reload in: 120 seconds</div>
 <div id="YourBalanceABAS">Your ABAS Balance: ? Connect Wallet</div>
 <div id="YourBalanceETH">Your ETH Balance: ? Connect Wallet</div>
 <div id="YourBalanceLP">Your LP Balance: ? Connect Wallet</div>
@@ -1164,7 +1164,7 @@
 	    };
 
 	    const updateCountdown = () => {
-		let countdown = 20; // Reset countdown to 15 seconds for each cycle
+		let countdown = 120; // Reset countdown to 15 seconds for each cycle
 		clearInterval(countdownIntervalId); // Ensure to clear previous interval to prevent duplicates
 		document.getElementById('reloadTimer').innerText = `Next reload in: ${countdown} seconds`;
 		countdownIntervalId = setInterval(() => {
@@ -1183,7 +1183,7 @@
 		await reloadData();
 		// The countdown is reset here via updateCountdown at the start of each data reload cycle
 		updateCountdown(); 
-	    }, 20000); // Set to reload data every 15 seconds
+	    }, 120000); // Set to reload data every 15 seconds
 
 	    // Initial load and start of the countdown
 	    reloadData();
