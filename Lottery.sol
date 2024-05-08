@@ -65,7 +65,6 @@ contract Lottery {
         round.deployerRewardPercentage = _deployerRewardPercentage;
     }
 
-
     function setMaxTicketsForNextRound(uint256 _maxTickets) public {
         require(msg.sender == deployer, "Only the deployer can change the max tickets");
         nextRoundSettings.maxTickets = _maxTickets;
@@ -167,7 +166,6 @@ contract Lottery {
         roundRewardsDistributed[roundId] = true;
     }
 
-    
     function smartClaim() public{
         uint[] memory totalRounds = getArrayOfRoundsWinnersUnclaimed(msg.sender);
     	withdrawRewardMultiArray(totalRounds);
