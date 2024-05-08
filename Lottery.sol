@@ -167,33 +167,6 @@ contract Lottery {
         roundRewardsDistributed[roundId] = true;
     }
 
-    function withdrawRewardMultiAuto() public {
-    	uint start = claimedTo[msg.sender];
-    	uint TotToRec = 0;
-    	uint DeployerToRec = 0;
-    	uint dono = 0;
-       for(uint x=start; x<=currentRound; x++){
-        	Round storage round = rounds[x];
-    		if(!roundRewardsDistributed[x] && msg.sender == round.winnerAddress){
-    		 TotToRec = TotToRec + round.winnerReward;
-    		 DeployerToRec = DeployerToRec + round.deployerReward;
-    		 dono = dono + round.donationAmount;
-    		 
-        	roundRewardsDistributed[x] = true;
-
-            emit Winner(round.winnerAddress, x, round.winnerReward);
-    		}
-    	}
-    	
-        acceptedToken.transfer(msg.sender, TotToRec);
-        acceptedToken.transfer(deployer, DeployerToRec);
-
-        // Transfer the calculated donation amount
-        if (dono > 0) {
-            acceptedToken.transfer(donationAddress, dono);
-        }
-
-    }
     
     function smartClaim() public{
         uint[] memory totalRounds = getArrayOfRoundsWinnersUnclaimed(msg.sender);
