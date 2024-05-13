@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -65,6 +65,7 @@ contract Lottery {
         round.deployerRewardPercentage = _deployerRewardPercentage;
     }
 
+
     function setMaxTicketsForNextRound(uint256 _maxTickets) public {
         require(msg.sender == deployer, "Only the deployer can change the max tickets");
         nextRoundSettings.maxTickets = _maxTickets;
@@ -119,7 +120,7 @@ contract Lottery {
         // Calculate donation amount here and store it in the round struct
         round.donationAmount = (round.ticketPrice * round.maxTickets) - (round.winnerReward + round.deployerReward);
 
-        emit WinnerSelected(winner, winningTicket, currentRound);	
+        emit WinnerSelected(winner, winningTicket, currentRound);
         roundWinners[currentRound] = winner;
         roundWinningTickets[currentRound] = winningTicket;
 
@@ -166,82 +167,62 @@ contract Lottery {
         roundRewardsDistributed[roundId] = true;
     }
 
-    function smartClaim() public{
-        uint[] memory totalRounds = getArrayOfRoundsWinnersUnclaimed(msg.sender);
-    	withdrawRewardMultiArray(totalRounds);
-        claimedTo[msg.sender] = currentRound -1;  
-    }
-
-    function smartClaimTotalAmount(address user) public view returns (uint Rewardw){
-        uint[] memory totalRounds = getArrayOfRoundsWinnersUnclaimed(user);
-    	//withdrawRewardMultiArray(totalRounds);    
-        uint TotToRec = 0;
-    	for(uint x=0; x<totalRounds.length; x++){
-        	Round storage round = rounds[totalRounds[x]];
-    		if(!roundRewardsDistributed[totalRounds[x]] && msg.sender == round.winnerAddress){
-    		 TotToRec = TotToRec + round.winnerReward;
-
-    		}
-    	}
-        return TotToRec;
-    }
-    
-    function getArrayOfRoundsWinnersAlreadyClaimed(address user) public view returns(uint256 [] memory) {
-    	uint start = 0;
-        uint count = 0;
-    	uint[] memory WinDays = new uint[](currentRound - start + 1);
-    	for(uint x=start; x<=currentRound; x++){
-        	Round storage round = rounds[x];
-    		if(roundRewardsDistributed[x] && user == round.winnerAddress){
-    		 WinDays[count]=x;
-             count++;
-    		}
-    	}
-    	uint[] memory WinDays2 = new uint[](count);
-    	for(uint x=0; x<count; x++){
-    		WinDays2[x]=WinDays[x];
-    	}
-    	
-    	return WinDays2;
-    }
-
-    function getArrayOfRoundsWinnersUnclaimed(address user) public view returns(uint256 [] memory) {
-    	uint start = claimedTo[user];
-        uint count = 0;
-    	uint[] memory WinDays = new uint[](currentRound - start + 1);
-    	for(uint x=start; x<=currentRound; x++){
-        	Round storage round = rounds[x];
-    		if(!roundRewardsDistributed[x] && user == round.winnerAddress){
-    		 WinDays[count]=x;
-             count++;
-    		}
-    	}
-    	uint[] memory WinDays2 = new uint[](count);
-    	for(uint x=0; x<count; x++){
-    		WinDays2[x]=WinDays[x];
-    	}
-    	
-    	return WinDays2;
-    }
-
-
-    function withdrawRewardMultiArray(uint256 [] memory roundIdzzzz) public {
+    function withdrawRewardMultiAuto(uint256 [] memory days) public {
+    	uint start = claimedTo[msg.sender];
     	uint TotToRec = 0;
     	uint DeployerToRec = 0;
     	uint dono = 0;
-    	for(uint x=0; x<roundIdzzzz.length; x++){
+    	for(int x=start; x<=roundId; x++){
+        	Round storage round = rounds[x];
+    		if(!roundRewardsDistributed[x] && msg.sender == round.winnerAddress){
+    		 TotToRec = TotToRec + round.winnerReward;
+    		 DeployerToRec = DeployerToRec + round.deployerReward;
+    		 dono = dono + round.donationAmount;
+    		 
+        	roundRewardsDistributed[roundId] = true;
+    		}
+    	}
+    	
+        acceptedToken.transfer(round.winnerAddress, TotToRec);
+        acceptedToken.transfer(deployer, DeployerToRec);
+
+        // Transfer the calculated donation amount
+        if (dono > 0) {
+            acceptedToken.transfer(donationAddress, dono);
+        }
+
+        emit Winner(round.winnerAddress, roundId, roundId);
+    }
+    
+    function getArrayOfRoundsWinners() returns(uint256 []) public {
+    	uint [roundId - start+1] WinDays;
+    	for(int x=start; x<=roundId; x++){
+        	Round storage round = rounds[x];
+    		if(!roundRewardsDistributed[x] && msg.sender == round.winnerAddress){
+    		 WinDays.push(x);
+    		}
+    	}
+    	
+    	return WinDays;
+    }
+
+    function withdrawRewardMultiArray(uint256 [] memory roundIdzzzz) public {
+    	uint start = claimedTo[msg.sender];
+    	uint TotToRec = 0;
+    	uint DeployerToRec = 0;
+    	uint dono = 0;
+    	for(int x=0; x<=roundIdzzzz.length; x++){
         	Round storage round = rounds[roundIdzzzz[x]];
-    		if(!roundRewardsDistributed[roundIdzzzz[x]] && msg.sender == round.winnerAddress){
+    		if(!roundRewardsDistributed[roundIdzzzz[x]] && msg.sender == roundIdzzzz[x].winnerAddress){
     		 TotToRec = TotToRec + round.winnerReward;
     		 DeployerToRec = DeployerToRec + round.deployerReward;
     		 dono = dono + round.donationAmount;
     		 
         	roundRewardsDistributed[roundIdzzzz[x]] = true;
-            emit Winner(round.winnerAddress, x, round.winnerReward);
     		}
     	}
     	
-        acceptedToken.transfer(msg.sender, TotToRec);
+        acceptedToken.transfer(round.winnerAddress, TotToRec);
         acceptedToken.transfer(deployer, DeployerToRec);
 
         // Transfer the calculated donation amount
@@ -249,6 +230,7 @@ contract Lottery {
             acceptedToken.transfer(donationAddress, dono);
         }
         
+        emit Winner(round.winnerAddress, roundId, roundId);
     }
     
     
