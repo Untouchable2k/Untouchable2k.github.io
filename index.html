@@ -338,7 +338,7 @@
     },
     swapImage2(rowIndex, imageIndex) {
 		var test123123 = imageIndex + 1
-		this.imageRows[rowIndex].images[imageIndex].url = `http://127.0.0.1:8080/img/lotteryBalls/${test123123}g.png`;
+		this.imageRows[rowIndex].images[imageIndex].url = `https://untouchable2k.github.io/img/lotteryBalls/${test123123}g.png`;
     },
     async addImageRow(newRow) {
       this.imageRows.push(newRow);
@@ -359,7 +359,7 @@
 	var test = rowIndex -1;
       // Create a new row object with the roundNumber incremented and new images array
       const newRoundNumber = roundNumber;
-      const newImages = new Array(10).fill(null).map((_, index) => ({ url: `http://127.0.0.1:8080/img/lotteryBalls/${index + 1}r.png` }));  // Set the swap image for each image in the new row
+      const newImages = new Array(10).fill(null).map((_, index) => ({ url: `https://untouchable2k.github.io/img/lotteryBalls/${index + 1}r.png` }));  // Set the swap image for each image in the new row
       
       console.log("Round Number : ", roundNumber);
       if(this.imageRows.length  < 1 ){
