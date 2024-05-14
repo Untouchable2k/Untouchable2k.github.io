@@ -13,6 +13,24 @@ body {
 }
 
 body {
+
+
+
+.navbar-header img {
+    transform: scale(4); /* Scales the image 4 times its original size */
+    transform-origin: center; /* Keeps the image centered during scaling */
+}
+
+.backgroundzzzz{
+  background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-size: cover;       /* Covers the entire area of the container */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+ 
+
+}
+
+
     padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
    /* Container holding the three columns */
@@ -20,17 +38,70 @@ body {
         display: flex;              /* Enables flexbox */
         justify-content: space-between; /* Distributes space between the columns */
         min-height: 87vh;             /* Full height of the viewport */
+    background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-size: cover;       /* Covers the entire area of the container */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+ 
     }
     /* Common styles for each column */
     .column2 {
-        flex: 1;                   /* Each column takes equal width */
+        flex: 1;    
+       border-radius: 10px; /* Rounded corners */ 
         padding: 20px;             /* Padding inside the columns */
         box-sizing: border-box;    /* Include padding and border in the width */
     }
+    
     /* Individual background colors for each column */
-    .left-column { background-color: #f8f9fa; }
-    .middle-column { background-color: #e9ecef; }
-    .right-column { background-color: #dee2e6; }
+    .left-column { background-color: #f8f9fa; 
+      color: white; /* White text */
+        border: 20px solid #aaa; /* Inner border color */
+    border-radius: 100px; /* Slightly smaller radius to stay inside the padding */
+    background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-size: cover;       /* Covers the entire area of the container */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    
+ 
+    
+    }
+    
+    
+    
+    button {
+  color: black; /* White text */
+  background-color: white; /* Example: Bootstrap primary blue */
+}
+
+
+    input[type="text"], input[type="number"] {
+  color: black; /* Dark text for visibility on white background */
+  background-color: white; /* White background */
+}
+    
+    .middle-column { background-color: #e9ecef; 
+      color: white; /* White text */
+            border: 20px solid #aaa; /* Inner border color */
+    border-radius: 100px; /* Slightly smaller radius to stay inside the padding */
+  
+      background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-size: cover;       /* Covers the entire area of the container */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+ 
+    }
+    .right-column { background-color: #dee2e6; 
+      color: white; /* White text */
+            border: 20px solid #aaa; /* Inner border color */
+    border-radius: 100px; /* Slightly smaller radius to stay inside the padding */
+    background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-size: cover;       /* Covers the entire area of the container */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+ 
+    
+    
+    }
 .img-portfolio {
     margin-bottom: 30px;
 }
@@ -61,7 +132,7 @@ body {
     opacity: 0.8;
 }
 	.invisi{
-	    color: #dee2e6;
+	    color: transparent;
 	}
 	
 	.rounder{

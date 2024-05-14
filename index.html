@@ -16,6 +16,7 @@
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 </head>
 <body>
+	<div class="backgroundzzzz">
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -32,7 +33,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right"> <li>
-                        <a href="/" style="font-size:1.1em">Home</a>
+                        <a href="/" style="font-size:1.1em">2Home</a>
                     </li>
                   <li>
                     <a href="https://evm-9wzybb6h4.sushi.com/swap?fromChainId=42161&fromCurrency=NATIVE&toChainId=42161&toCurrency=0x0B549125fbEA37E52Ee05FA388a3A0a7Df792Fa7&amount=0.0000001&chainId=42161&token0=NATIVE&token1=0x0B549125fbEA37E52Ee05FA388a3A0a7Df792Fa7&swapAmount=0.01" style="font-size:1.1em">Buy ABAS</a>
@@ -94,7 +95,7 @@
 		<h2>Round: {{currentRound}}</h2>
   <button id="buttonBuyTickets">Buy Tickets</button></br>
     <label for="buyTicket">Buy Ticket(s):</label>  
-    <input type="number" min="1" max="10" v-model.number="buyTicketAmount" placeholder="Ticket Amount">
+    <input id="button22" type="number" min="1" max="10" v-model.number="buyTicketAmount" placeholder="Ticket Amount">
    <div id="buyTicketAmt"> Total # of Tickets Sold: {{ TickestSold }}</div> 
    <div id="txLeft">Tickets Left: {{ (TotalTickets - TickestSold) }} </div>
    <div id="WinningChance">Winning Chance: {{ winningChance }}</div>
@@ -251,6 +252,7 @@
 <div id="lpMasterAllowance">Is MasterContract Approved to work?: ? Connect Wallet</div>
 </center>
 -->
+</div>
         </body>
             <footer id="footer.dark taz"> 
           <div class="container">
@@ -299,7 +301,7 @@
         {roundNumber: 31, images: new Array(10).fill(null).map((_, index) => ({ url: `http://127.0.0.1:8080/img/image${index + 1}g.png` }))}
       ], 
       currentPage: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 3,
 	  contractABI: ["function currentRound() public view returns (uint256)"],
       swapImageName: 'http://127.0.0.1:8080/img/zkBitcoin.png',
       provider: null,
