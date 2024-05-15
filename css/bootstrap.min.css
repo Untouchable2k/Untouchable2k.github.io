@@ -236,7 +236,7 @@ th {
   }
   .navbar {
    
-    background-image: url('http://127.0.0.1:8080/img/headerbackground.png'); /* Path to your background image */
+    background-image: url('https://untouchable2k.github.io/img/headerbackground.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -4267,7 +4267,7 @@ textarea.input-group-sm>.input-group-btn>.btn {
 @media (min-width:768px) {
   .navbar-header {
     float:left;
-    background-image: url('http://127.0.0.1:8080/img/headerbackground.png');
+    background-image: url('https://untouchable2k.github.io/img/headerbackground.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -4683,7 +4683,7 @@ fieldset[disabled] .navbar-default .btn-link:hover {
   color:#ccc
 }
 .navbar-inverse {
-     background-image: url('http://127.0.0.1:8080/img/headerbackground.png'); /* Path to your background image */
+     background-image: url('https://untouchable2k.github.io/img/headerbackground.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */

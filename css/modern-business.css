@@ -21,7 +21,7 @@ body {
 }
 
 .backgroundzzzz{
-  background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+  background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -37,7 +37,7 @@ body {
         display: flex;              /* Enables flexbox */
         justify-content: space-between; /* Distributes space between the columns */
         min-height: 87vh;             /* Full height of the viewport */
-    background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -56,7 +56,7 @@ body {
       color: white; /* White text */
         border: 20px solid #aaa; /* Inner border color */
     border-radius: 100px; /* Slightly smaller radius to stay inside the padding */
-    background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -83,7 +83,7 @@ body {
             border: 20px solid #aaa; /* Inner border color */
     border-radius: 100px; /* Slightly smaller radius to stay inside the padding */
   
-      background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+      background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -93,7 +93,7 @@ body {
       color: white; /* White text */
             border: 20px solid #aaa; /* Inner border color */
     border-radius: 100px; /* Slightly smaller radius to stay inside the padding */
-    background-image: url('http://127.0.0.1:8080/img/background.png'); /* Path to your background image */
+    background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -474,7 +474,7 @@ footer li{
 }
 footer{
 
-     background-image: url('http://127.0.0.1:8080/img/footerbackground.png'); /* Path to your background image */
+     background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
