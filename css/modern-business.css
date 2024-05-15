@@ -15,7 +15,6 @@ body {
 body {
 
 
-
 .navbar-header img {
     transform: scale(4); /* Scales the image 4 times its original size */
     transform-origin: center; /* Keeps the image centered during scaling */
@@ -42,7 +41,7 @@ body {
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
- 
+     background-size: 100% 100%;
     }
     /* Common styles for each column */
     .column2 {
@@ -474,7 +473,12 @@ footer li{
 	color:#f0f9ff;
 }
 footer{
-background-color:#282d32;
+
+     background-image: url('http://127.0.0.1:8080/img/footerbackground.png'); /* Path to your background image */
+    background-size: cover;       /* Covers the entire area of the container */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-size: 100% 100%;
 }
 
   .footer-dark2 {

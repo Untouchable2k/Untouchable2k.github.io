@@ -333,6 +333,7 @@
   },
   mounted() {
     this.initializeEthereum();
+    this.fetchAuctions();
   },
   methods: {
     swapImage(rowIndex, imageIndex) {
@@ -607,6 +608,7 @@
   },
   mounted() {
     this.initializeEthereum();
+    this.fetchAuctions();
   },
   methods: {
     swapImage(rowIndex, imageIndex) {
@@ -651,7 +653,7 @@
       this.provider = new ethers.providers.JsonRpcProvider('https://bsc-testnet-rpc.publicnode.com');
 
       // Create a contract instance
-      this.contract = new ethers.Contract(this.contractAddress, this.abi, this.provider);
+      this.contract = new ethers.Contract(this.contractAddress, this.contractABI, this.provider);
     },
     async getCurrentBlock() {
       try {
