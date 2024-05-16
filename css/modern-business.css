@@ -258,7 +258,7 @@ max-width: 768px {
 }
 
 .image-row {
-    display: block; /* Displays images inline within the row */
+    display: flex; /* Displays images inline within the row */
     flex-wrap: nowrap; /* Prevents images from wrapping */
     overflow-x: none; /* Prevents horizontal scrolling */
     width: 100%; /* Full width of the container */
@@ -266,7 +266,7 @@ max-width: 768px {
 
 .image-row img {
     width: 10%; /* 10% of the parent element's width */
-    height: auto; /* Maintain aspect ratio */
+    height: 10%; /* Maintain aspect ratio */
     margin: 0; /* Remove margin to avoid extra spacing */
 }
 
