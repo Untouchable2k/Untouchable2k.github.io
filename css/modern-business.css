@@ -246,30 +246,26 @@ max-width: 768px {
     }
     
     
-    
-    
-  .image-block {
-    display: block; /* Displays images inline within the row */
+    .image-block {
+    display: flex; /* Displays images inline within the row */
     flex-wrap: nowrap; /* Prevents images from wrapping */
     overflow-x: auto; /* Allows horizontal scrolling */
     width: 100%; /* Full width of the container */
-    
-  }
-  .image-row {
+}
+
+.image-row {
     display: flex; /* Displays images inline within the row */
     flex-wrap: nowrap; /* Prevents images from wrapping */
-    overflow-x: none; /* Allows horizontal scrolling */
+    overflow-x: none; /* Prevents horizontal scrolling */
     width: 100%; /* Full width of the container */
-    
-  }
+}
 
-  .image-row img {
-    width: 100; /* Fixed width, adjust as needed */
+.image-row img {
+    width: 10%; /* 10% of the parent element's width */
     height: auto; /* Maintain aspect ratio */
-    margin: -3px; /* Adds space between images */
-  }
-  
-  
+    margin: 0; /* Remove margin to avoid extra spacing */
+}
+
 .products .caption {
     height: 130px;
     overflow: hidden;
