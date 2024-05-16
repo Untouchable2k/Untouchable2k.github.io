@@ -239,7 +239,7 @@ max-width: 768px {
             overflow-x: auto; /* Ensure scrolling is always enabled */
         }
         .image-container img {
-            max-width: 12%;
+            max-width: 11%;
 	    width: 100%; /* Full width of the parent container */
 	    display: flex; /* Use flexbox to layout children (images) */
 	    flex-wrap: wrap; /* Prevent wrapping of items */
