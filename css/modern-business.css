@@ -226,7 +226,7 @@ max-width: 768px {
 	}
 .image-container {
     width: 100%; /* Full width of the parent container */
-    display: flex; /* Use flexbox to layout children (images) */
+    display: block; /* Use flexbox to layout children (images) */
     flex-wrap: wrap; /* Prevent wrapping of items */
     align-items: center; /* Align items vertically */
 }
@@ -258,7 +258,7 @@ max-width: 768px {
 }
 
 .image-row {
-    display: flex; /* Displays images inline within the row */
+    display: block; /* Displays images inline within the row */
     flex-wrap: nowrap; /* Prevents images from wrapping */
     overflow-x: none; /* Prevents horizontal scrolling */
     width: 100%; /* Full width of the container */
