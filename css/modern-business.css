@@ -55,7 +55,6 @@ body {
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
-    max-width: 30%; /* Set a maximum width to ensure column doesn't expand */
 
  
     
@@ -88,7 +87,6 @@ body {
     background-size: cover;       /* Covers the entire area of the container */
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
-    max-width: 30%; /* Set a maximum width to ensure column doesn't expand */
 
  
     }
@@ -101,7 +99,6 @@ body {
     background-position: center;  /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
     min-width: 35%;
-    max-width: 35%; /* Set a maximum width to ensure column doesn't expand */
 
     
     }
@@ -240,7 +237,7 @@ max-width: 768px {
         }
         .image-container img {
             max-width: 11%;
-	    width: 100%; /* Full width of the parent container */
+	    width: 100; /* Full width of the parent container */
 	    display: flex; /* Use flexbox to layout children (images) */
 	    flex-wrap: wrap; /* Prevent wrapping of items */
 	    align-items: center; /* Align items vertically */
@@ -267,7 +264,7 @@ max-width: 768px {
   }
 
   .image-row img {
-    width: 80px; /* Fixed width, adjust as needed */
+    width: 100; /* Fixed width, adjust as needed */
     height: auto; /* Maintain aspect ratio */
     margin: -3px; /* Adds space between images */
   }
