@@ -26,6 +26,10 @@ body {
 
 
     padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    @media (min-width: 768px) and (max-width: 991px) {
+        padding-top: 100px; /* Adjusted padding for .navbar-fixed-top */
+    }
+
 }
    /* Container holding the three columns */
     .container2 {
