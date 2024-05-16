@@ -15,11 +15,6 @@ body {
 body {
 
 
-.navbar-header img {
-    transform: scale(4); /* Scales the image 4 times its original size */
-    transform-origin: center; /* Keeps the image centered during scaling */
-}
-
 .backgroundzzzz{
   background-image: url('https://untouchable2k.github.io/img/background.png'); /* Path to your background image */
     background-size: cover;       /* Covers the entire area of the container */
@@ -110,6 +105,49 @@ body {
 
     
     }
+    
+    
+/* Default styles for screens larger than 768px */
+.navbar-header img {
+    transform: scale(4); /* Scales the image 11 times its original size for screens larger than 768px */
+    transform-origin: left; /* Keeps the image centered during scaling */
+}
+
+    
+@media only screen and (max-width: 768px) {
+    .navbar-header img {
+        transform: scale(3); /* Scales the image 3 times its original size for screens smaller than 768px */
+        transform-origin: left; /* Keeps the image centered during scaling */
+    }
+    .container2 {
+        flex-direction: column; /* Stack columns vertically on mobile */
+    }
+    .middle-column,
+    .right-column,
+    .left-column {
+        max-width: 100%; /* Set max-width to 100% to occupy full width on mobile */
+        min-width: auto; /* Reset min-width */
+    }
+}
+
+    
+max-width: 768px {
+    .navbar-header img {
+        transform: scale(3); /* Scales the image 3 times its original size for screens smaller than 768px */
+        transform-origin: left; /* Keeps the image centered during scaling */
+    }
+    .container2 {
+        flex-direction: column; /* Stack columns vertically on mobile */
+    }
+    .middle-column,
+    .right-column,
+    .left-column {
+        max-width: 100%; /* Set max-width to 100% to occupy full width on mobile */
+        min-width: auto; /* Reset min-width */
+    }
+}
+    
+    
 .img-portfolio {
     margin-bottom: 30px;
 }
@@ -201,7 +239,7 @@ body {
             overflow-x: auto; /* Ensure scrolling is always enabled */
         }
         .image-container img {
-            max-width: 7%;
+            max-width: 12%;
 	    width: 100%; /* Full width of the parent container */
 	    display: flex; /* Use flexbox to layout children (images) */
 	    flex-wrap: wrap; /* Prevent wrapping of items */
