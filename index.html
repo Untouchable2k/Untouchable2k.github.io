@@ -93,6 +93,9 @@
 		
 	<div id="app2">	
 		<h2>Round: {{currentRound}}</h2>
+<button id="approveTokenBtnBNBTC" style="display: none;">Step 1) Approve BNBTC Token</button>
+<button id="approveTokenBtnBNBTC2" style="display: none;">Step 2) Buy Tickets</button>
+
   <button id="buttonBuyTickets">Buy Tickets</button></br>
     <label for="buyTicket">Buy Ticket(s):</label>  
     <input id="button22" type="number" min="1" max="10" v-model.number="buyTicketAmount" placeholder="Ticket Amount">
@@ -123,98 +126,42 @@
 		<p>This is the middle section, ideal for primary content or more detailed information.</p>
 		
 		
+<div id="YourAddressbsc">Your connected BSC address: ? Connect Wallet</div>
 		
-		<button id="connectWalletBtn">Connect Wallet</button><br>
-    <a href="removeLiq.html"style="font-size:1.1em">Click here to remove Liquidity from ABAS/ETH</a>
-
-<div id="YourAddress">Your connected address: ? Connect Wallet</div>
-<div id="reloadTimer">Next reload in: 20 seconds</div>
-<div id="YourBalanceABAS">Your ABAS Balance: ? Connect Wallet</div>
-		
-		<div id="YourBalanceETH">Your ETH Balance: ? Connect Wallet</div>
-<div id="YourBalanceLP">Your LP Balance: ? Connect Wallet</div>
-    <label for="tokenAmountInput">ABAS Token Amount:</label>
-    <input id="tokenAmountInput" type="number" min="0" placeholder="Token Amount">
-     <button id="maxTokenBtn">Max</button>
-<div>
-    <label for="ethAmountInput">ETH Amount:</label>
-    <input id="ethAmountInput" type="number" min="0" step="0.0000001" placeholder="ETH Amount">
-</div>
-<button id="approveTokenBtn">Approve ABAS Token</button>
-<button id="approveMasterContract22">Approve Master Contract</button>
-<button id="addLiquidityBtn" disabled>Add Liquidity</button>
-<br></br>
-<div id="lpTokenBalanceABAS">TOTAL ABAS LP Pool ABAS Balance: ? Connect Wallet</div>
-<div id="lpTokenBalanceETH">TOTAL ABAS LP Pool ETH Balance: ? Connect Wallet</div>
-<div id="Costof1ABASTokeninETH">1 ABAS Token costs in ETH: ? Connect Wallet</div>
-<div id="lpAllowance">ABAS ALLOWANCE ON CONTRACT: ? Connect Wallet</div>
-<div id="lpMasterAllowance">Is MasterContract Approved to work?: ? Connect Wallet</div>
-
-		
-		
-		
+<div id="YourBalanceBNBTC">Your BNBTC Balance: ? Connect Wallet</div>
+<div id="YourBalanceBNB">Your BNB Balance: ? Connect Wallet</div>
+<div id="YourAllowanceBNBTC">Your BNBTC Allowance: ? Connect Wallet</div>
+    <button id="getTestnetTokens">Get BNBTC Test Tokens (Testnet Only)</button><br>
+   
+   
 	    </div>
 	    <div class="column2 right-column">
 		<h2>Right Section - Results</h2>
-        <!--
-        <h2>Round #349</h2>
-    <div class="image-container">
-            <img src="1.jpg" alt="1">
-            <img src="2.jpg" alt="2">
-            <img src="3.jpg" alt="3">
-            <img src="4.jpg" alt="4">
-            <img src="5.jpg" alt="5">
-            <img src="6.jpg" alt="6">
-            <img src="7.jpg" alt="7">
-            <img src="8.jpg" alt="8">
-            <img src="9.jpg" alt="9">
-            <img src="0.jpg" alt="0">
-	    <button id="connectWalletBtn">Claim</button><br>
-        </div>        
-        <h2>Round #341</h2>
-    <div class="image-container">
-            <img src="1.jpg" alt="1">
-            <img src="2.jpg" alt="2">
-            <img src="3.jpg" alt="3">
-            <img src="4.jpg" alt="4">
-            <img src="5.jpg" alt="5">
-            <img src="6.jpg" alt="6">
-            <img src="7.jpg" alt="7">
-            <img src="8.jpg" alt="8">
-            <img src="9.jpg" alt="9">
-            <img src="0.jpg" alt="0">
-            <button id="connectWalletBtn">Claim</button><br>
-        </div>
-        -->
-        
-        <!--
-        <div class="image-container" id="app">
-    		  <div class="image-row">
-   
-    		  <img v-for="(image, index) in images" :key="index" :src="image" alt="Dynamic Image">
-    		  </div>
-		<div class="image-row">
-   
-    		  <img v-for="(image, index) in images" :key="index" :src="image" @click="swapImage(index)" alt="Dynamic Image">
-    		  </div>
- 	 </div>
-
--->
+		
+    <button id="GetLottoTotal">Get Total Lottery winnings </button><br>
+    <button id="claimWinnings">Claim Winnings</button><br>
+<div id="LottoWinnings">Lottery winnings: ? Connect Wallet</div>
+      
 
 <button id="test-btn3">Test Fetch Your Results</button>
 
-<div id="app" class="image-container">
-  <div v-for="(row, rowIndex) in displayedRows" :key="rowIndex">
-    <div class="image-block">
-      <h2>Round #{{ row.roundNumber }}</h2>
-    </div>
-    <div class="image-row">
-      <img v-for="(image, index) in row.images" :key="index" :src="image.url" alt="Dynamic Image">
+<div id="app">
+  <div class="image-container">
+    <div v-for="(row, rowIndex) in displayedRows" :key="rowIndex">
+      <div class="image-block">
+        <h2>Round #{{ row.roundNumber }}</h2>
+      </div>
+      <div class="image-row">
+        <img v-for="(image, index) in row.images" :key="index" :src="image.url" alt="Dynamic Image">
+      </div>
     </div>
   </div>
-  <button @click="prevPage" :hidden="currentPage <= 0">Previous</button>
-  <button @click="nextPage" :hidden="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
+  <div class="buttonsstuff">
+    <button @click="prevPage" :hidden="currentPage <= 0">Previous</button>
+    <button @click="nextPage" :hidden="(currentPage + 1) * rowsPerPage >= imageRows.length">Next</button>
+  </div>
 </div>
+
 
 
 
@@ -222,36 +169,7 @@
     </div>
 	    </div>
 </div>
-<!--
-    <center>
-   <h2>Add Liquidity to ABAS/ETH SushiSwap Pool</h2>
-<button id="connectWalletBtn">Connect Wallet</button><br>
-    <a href="removeLiq.html"style="font-size:1.1em">Click here to remove Liquidity from ABAS/ETH</a>
-<div>
-<div id="YourAddress">Your connected address: ? Connect Wallet</div>
-<div id="reloadTimer">Next reload in: 20 seconds</div>
-<div id="YourBalanceABAS">Your ABAS Balance: ? Connect Wallet</div>
-<div id="YourBalanceETH">Your ETH Balance: ? Connect Wallet</div>
-<div id="YourBalanceLP">Your LP Balance: ? Connect Wallet</div>
-    <label for="tokenAmountInput">ABAS Token Amount:</label>
-    <input id="tokenAmountInput" type="number" min="0" placeholder="Token Amount">
-     <button id="maxTokenBtn">Max</button>
-</div>
-<div>
-    <label for="ethAmountInput">ETH Amount:</label>
-    <input id="ethAmountInput" type="number" min="0" step="0.0000001" placeholder="ETH Amount">
-</div>
-<button id="approveTokenBtn">Approve ABAS Token</button>
-<button id="approveMasterContract22">Approve Master Contract</button>
-<button id="addLiquidityBtn" disabled>Add Liquidity</button>
-<br></br>
-<div id="lpTokenBalanceABAS">TOTAL ABAS LP Pool ABAS Balance: ? Connect Wallet</div>
-<div id="lpTokenBalanceETH">TOTAL ABAS LP Pool ETH Balance: ? Connect Wallet</div>
-<div id="Costof1ABASTokeninETH">1 ABAS Token costs in ETH: ? Connect Wallet</div>
-<div id="lpAllowance">ABAS ALLOWANCE ON CONTRACT: ? Connect Wallet</div>
-<div id="lpMasterAllowance">Is MasterContract Approved to work?: ? Connect Wallet</div>
-</center>
--->
+
 </div>
         </body>
             <footer id="footer.dark taz"> 
@@ -575,9 +493,11 @@
       provider2: null,
       winnerImages: 'http://127.0.0.1:8080/img/image1.jpg',
       contractAddress: '0xAFbD16EAcC9b31AE7fC3626863195633F81F5983',
+      TokencontractAddress: '0x59984dBdda327dAF68285a896ACe398A739F80c3',
       totalTicketsSold: 0,
       buyTicketAmount: 1, // Set initial value here
       maxTickets: 10,
+      approvalAmt: 0,
       contractABI: ["function currentRound() public view returns (uint256)",],
       contract: null,
       currentRound: 0,
@@ -609,6 +529,8 @@
   mounted() {
     this.initializeEthereum();
     this.fetchAuctions();
+    this.GetStats();
+    this.getAuctionTotal();
   },
   methods: {
     swapImage(rowIndex, imageIndex) {
@@ -881,15 +803,332 @@
                 alert('MetaMask is not installed. Please install it to use this feature.');
             }
 		
-	}   
+	}  ,
+	  async GetStats(){
+		    
+		   if (typeof window.ethereum !== 'undefined') {
+                try {
+                
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    provider2 = new ethers.providers.Web3Provider(window.ethereum);
+                    signer2 = provider2.getSigner();
+                    const { chainId } = await provider2.getNetwork();
+            	     userAddy = await signer2.getAddress();
+                    
+                    document.getElementById('YourAddressbsc').innerText = `Your connected BSC address: ${userAddy}`;
+                    document.getElementById('YourBalanceBNBTC').innerText = `Your BNBTC Balance: ${userAddy}`;
+                    document.getElementById('YourBalanceBNB').innerText = `Your BNB Balance: ${userAddy}`;
+                    document.getElementById('YourAllowanceBNBTC').innerText = `Your BNBTC Allowance: ${userAddy}`;
+                    
+                    const tokenAbi = [
+    // balanceOf
+    {
+        "constant": true,
+        "inputs": [{"name": "_owner", "type": "address"}],
+        "name": "balanceOf",
+        "outputs": [{"name": "balance", "type": "uint256"}],
+        "type": "function"
+    },
+    // allowance
+    {
+        "constant": true,
+        "inputs": [{"name": "_owner", "type": "address"}, {"name": "_spender", "type": "address"}],
+        "name": "allowance",
+        "outputs": [{"name": "remaining", "type": "uint256"}],
+        "type": "function"
+    }
+];
+			const tokenAddress = this.TokencontractAddress; // Token Contract Address
+			const walletAddress = userAddy; // Your wallet address
+			const contractAddress = this.contractAddress; // The contract address to check approval
+			var contractTT = new ethers.Contract(tokenAddress, tokenAbi, signer2);
+
+			 try {
+				// Get token balance
+				const balanceBNBTC = await contractTT.balanceOf(walletAddress);
+				const balBNBTCFormatted = ethers.utils.formatUnits(balanceBNBTC, 8);
+				console.log(`Balance for ${contractAddress}: ${ethers.utils.formatUnits(balanceBNBTC, 8)} Tokens`);
+
+				// Get allowance
+      				  const allowance = await contractTT.allowance(walletAddress, contractAddress);
+				const AllowanceFormatted = ethers.utils.formatUnits(allowance, 8);
+				console.log(`Allowance for ${contractAddress}: ${ethers.utils.formatUnits(allowance, 8)} Tokens`);
+				
+    				const inputElement = document.getElementById('button22');
+    				const buyTicketAmount2 = inputElement.value * this.buyTicketAmount;
+
+    				const approveBtn = document.getElementById('approveTokenBtnBNBTC');
+				const approveBtn2 = document.getElementById('approveTokenBtnBNBTC2');
+				const approveBtn3 = document.getElementById('buttonBuyTickets');
+
+				if (allowance.lt(buyTicketAmount2)) {
+				    approveBtn.style.display = 'block';
+				    approveBtn2.style.display = 'block';
+				    approveBtn3.style.display = 'none';
+				} else {
+				    approveBtn.style.display = 'none';
+				    approveBtn2.style.display = 'none';
+				    approveBtn3.style.display = 'block';
+				}
+				const balanceBNB = await provider.getBalance(walletAddress);
+				const balanceBNBFormatted = ethers.utils.formatUnits(balanceBNB, 18);
+				console.log(`Allowance for ${contractAddress}: ${ethers.utils.formatUnits(balanceBNB, 18)} Tokens`);
+
+                    document.getElementById('YourBalanceBNBTC').innerText = `Your BNBTC Balance: ${balBNBTCFormatted}`;
+                    document.getElementById('YourAllowanceBNBTC').innerText = `Your BNBTC Allowance: ${AllowanceFormatted}`;
+                    document.getElementById('YourBalanceBNB').innerText = `Your BNB Balance: ${balanceBNBFormatted}`;
+			    } catch (error) {
+				console.error(`Error2: ${error.message}`);
+			    }
+                    console.log('Tickets bought successfully');
+					
+                    console.log("Wallet connected");
+                } catch (error) {
+                    console.error("Error2 connecting to wallet:", error);
+                }
+            } else {
+                alert('MetaMask is not installed. Please install it to use this feature.');
+            }
+
+	},
+	  async approveBNBTC(){
+		  
+		  
+		const approveBNBTCABI = [
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_spender",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+
+		  
+		   if (typeof window.ethereum !== 'undefined') {
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    provider2 = new ethers.providers.Web3Provider(window.ethereum);
+                    signer2 = provider2.getSigner();
+                    const { chainId } = await provider2.getNetwork();
+            	     userAddy = await signer2.getAddress();
+                    
+					this.contract3 = new ethers.Contract(this.TokencontractAddress, approveBNBTCABI, signer2);
+					console.log("Amount to approve: 10000000000000000000000");
+        const transactionResponse = await this.contract3.approve(this.contractAddress, "10000000000000000000000");
+        await transactionResponse.wait();  // Wait for the transaction to be mined
+        console.log('Approved BNBTC on Contract successfully');
+					
+                } catch (error) {
+                    console.error("Error connecting to wallet to approve bnbtc on contract:", error);
+                }
+            } else {
+                alert('MetaMask is not installed. Please install it to use this feature.');
+            }
+		
+	},
+	  async getTestnetTokens(){
+		  
+		  
+		const getTestnetTokensABI = [
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawToken",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+
+		  
+		   if (typeof window.ethereum !== 'undefined') {
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    provider2 = new ethers.providers.Web3Provider(window.ethereum);
+                    signer2 = provider2.getSigner();
+                    const { chainId } = await provider2.getNetwork();
+            	     userAddy = await signer2.getAddress();
+                    
+					this.contract3 = new ethers.Contract(this.TokencontractAddress, getTestnetTokensABI, signer2);
+					console.log("amount of test tokens to recieve: 1000000000000000");
+        const transactionResponse = await this.contract3.withdrawToken("1000000000000000");
+        await transactionResponse.wait();  // Wait for the transaction to be mined
+        console.log('Recieved Testnet mBNBTC successfully');
+					
+                } catch (error) {
+                    console.error("Error recieving mock bnbtc:", error);
+                }
+            } else {
+                alert('MetaMask is not installed. Please install it to use this feature.');
+            }
+		
+	},
+	  async getAuctionTotal(){
+		  
+		  
+		const getAuctionTotalABI =  [
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "smartClaimTotalAmount",
+        "outputs": [
+            {
+                "name": "Rewardw",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }
+];
+
+		  
+		   if (typeof window.ethereum !== 'undefined') {
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    provider2 = new ethers.providers.Web3Provider(window.ethereum);
+                    signer2 = provider2.getSigner();
+                    const { chainId } = await provider2.getNetwork();
+            	     userAddy = await signer2.getAddress();
+                    
+					contract33 = new ethers.Contract(this.contractAddress, getAuctionTotalABI, signer2);
+					console.log("Checking users auctionTotal to recieve");
+        const transactionResponse = await contract33.smartClaimTotalAmount(userAddy);
+
+        console.log('Recieved Total Claim amount successfully');
+        var totalFormatted = ethers.utils.formatUnits(transactionResponse, 8)
+        
+                    document.getElementById('LottoWinnings').innerText = `Lottery Winnings: ${totalFormatted} BNBTC`;
+					
+                } catch (error) {
+                    console.error("Error recieving total claim a mount: ", error);
+                }
+            } else {
+                alert('MetaMask is not installed. Please install it to use this feature.');
+            }
+		
+	},
+	  async getClaimLotto(){
+		  
+		  
+		const getClaimLottoABI =  [
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getArrayOfRoundsWinnersUnclaimed",
+        "outputs": [
+            {
+                "type": "uint256[]",
+                "name": "",
+                "internalType": "uint256[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },{
+        "constant": false,
+        "inputs": [
+            {
+                "name": "roundIdzzzz",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "withdrawRewardMultiArray",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+
+		  
+		   if (typeof window.ethereum !== 'undefined') {
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    provider2 = new ethers.providers.Web3Provider(window.ethereum);
+                    signer2 = provider2.getSigner();
+                    const { chainId } = await provider2.getNetwork();
+            	     userAddy = await signer2.getAddress();
+                    
+					contract33 = new ethers.Contract(this.contractAddress, getClaimLottoABI, signer2);
+					console.log("Checking users auctionTotal to recieve");
+        const transactionResponse = await contract33.getArrayOfRoundsWinnersUnclaimed(userAddy);
+	console.log("Array of unclaimed lotto winnings: ",transactionResponse);
+	
+	
+	  const transactionResponse2 = await contract33.withdrawRewardMultiArray(transactionResponse);
+	
+        await transactionResponse2.wait();  // Wait for the transaction to be mined
+        console.log('Recieved Claim amount successfully');
+        
+
+					
+                } catch (error) {
+                    console.error("Error recieving total claim a mount: ", error);
+                }
+            } else {
+                alert('MetaMask is not installed. Please install it to use this feature.');
+            }
+		
+	}  
   }
 });
     
     
+
     
+    document.getElementById('GetLottoTotal').addEventListener('click', function() {
+    app2.getAuctionTotal(); // Call the method with specific parameters
+  });
+    document.getElementById('claimWinnings').addEventListener('click', function() {
+    app2.getClaimLotto(); // Call the method with specific parameters
+  });
+    document.getElementById('approveTokenBtnBNBTC').addEventListener('click', function() {
+    app2.approveBNBTC(); // Call the method with specific parameters
+  });
+    document.getElementById('getTestnetTokens').addEventListener('click', function() {
+    app2.getTestnetTokens(); // Call the method with specific parameters
+  });
+  
+  
     
-    
-    
+    document.getElementById('approveTokenBtnBNBTC2').addEventListener('click', function() {
+    app2.BuyTicketz(); // Call the method with specific parameters
+  });
     document.getElementById('buttonBuyTickets').addEventListener('click', function() {
     app2.BuyTicketz(); // Call the method with specific parameters
   });
@@ -1130,449 +1369,9 @@
         
         
         
-        
-        
-        async function fetchBalances() {
-            const address = await signer.getAddress();
-            const tokenContract = new ethers.Contract(tokenAddress, tokenABI, signer); // Define `tokenAddress` and `tokenABI`
-            // Fetch token balance
-            const tokenBalance = await tokenContract.balanceOf(address);
-            console.log("TBalance: ", tokenBalance);
-            document.getElementById('tokenAmountInput').max = ethers.utils.formatEther(tokenBalance);
-            const tokenBalance2html = ethers.utils.formatEther(tokenBalance);
-	    document.getElementById('YourBalanceABAS').innerText = `Your ABAS Balance: ${tokenBalance2html}`;
-            // Fetch ETH balance
-            const ethBalance = await provider.getBalance(address);	
-            const maxBalance = await fetchTokenBalance();
-	    tokenAmountInput.value = ethers.utils.formatUnits(maxBalance, 18); // Assuming token uses 18 decimal places
-	    document.getElementById('ethAmountInput').max = ratioz * ethers.utils.formatUnits(maxBalance, 18); // Assuming token uses 18 decimal places
-
-            document.getElementById('ethAmountInput').step = (ratioz * ethers.utils.formatEther(maxBalance, 18) / 10).toFixed(8);
-            
-            const tokenBalance2html2 = ethers.utils.formatEther(ethBalance);
-	    document.getElementById('YourBalanceETH').innerText = `Your ETH Balance: ${tokenBalance2html2}`;
-            console.log("Balances fetched");
-            
-            const tokenContractff = new ethers.Contract(LPtokenAddress, tokenABI, signer); // Define `tokenAddress` and `tokenABI`
-            // Fetch token balance
-            const tokenBalanceff = await tokenContractff.balanceOf(address);
-            console.log("TBalance: ", tokenBalance);
-            const tokenBalance2html222222  = ethers.utils.formatEther(tokenBalanceff);
-	    document.getElementById('YourBalanceLP').innerText = `Your LP Balance: ${tokenBalance2html222222}`;
-	    
-            
-        }
-        
-        async function fetchLPTokenBalanceABAS() {
-	    const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	    const tokenContract = new ethers.Contract(LPtokenAddress, LPtokenABI, signer); // Define `tokenAddress` and `tokenABI`
-
-	    const balance = await tokenContract.getReserves();
-	    console.log("LP BALANCES: ", balance);
-	    const formattedBalance = ethers.utils.formatUnits(balance[0], 18);
-	    document.getElementById('lpTokenBalanceETH').innerText = `TOTAL ABAS LP Pool ABAS Balance: ${formattedBalance}`;
-
-	    const formattedBalance2 = ethers.utils.formatUnits(balance[1], 18);
-	    document.getElementById('lpTokenBalanceABAS').innerText = `TOTAL ABAS LP Pool ETH Balance: ${formattedBalance2}`;
-	    const formattedBalanceRatio = ethers.utils.formatUnits(balance[1], 18) / ethers.utils.formatUnits(balance[0], 18);
-	    document.getElementById('Costof1ABASTokeninETH').innerText = `1 ABAS Token costs in ETH: ${formattedBalanceRatio}`;
-
-	    return formattedBalanceRatio; // Convert BigNumber to string
-	}
-
-        async function fetchLPTokenBalanceETH() {
-	    const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	    const tokenContract = new ethers.Contract(LPtokenAddress, LPtokenABI, signer); // Define `tokenAddress` and `tokenABI`
-
-	    const balance = await tokenContract.getReserves();
-	    console.log("LP BALANCES: ", balance);
-	    return balance[1].toString(); // Convert BigNumber to string
-	}
-
-        async function fetchMinAmountOfTokens() {
-	    const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	    const tokenContract = new ethers.Contract(LPtokenAddress, LPtokenABI, signer); // Define `tokenAddress` and `tokenABI`
-
-	    const balance = await tokenContract.getReserves();
-	    const tSupply = await tokenContract.totalSupply();
-	    console.log("ABAS BALANCES: ", balance[0].toString());
-	    console.log("ABAS tSupply: ", tSupply.toString());
-	    ratiozLP = tSupply / balance[0];
-	    return balance[0].toString(); // Convert BigNumber to string
-	}
-
-        
-        
-        async function fetchTokenBalance() {
-	    const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	    const tokenContract = new ethers.Contract(tokenAddress, tokenABI, signer); // Define `tokenAddress` and `tokenABI`
-
-	    const balance = await tokenContract.balanceOf(userAddress);
-	    return balance.toString(); // Convert BigNumber to string
-	}
-
-        
-        
-        async function fetchTokenApproved() {
-	    const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	    const tokenContract = new ethers.Contract(tokenAddress, tokenABI, signer); // Define `tokenAddress` and `tokenABI`
-	    tokenAllowance = await tokenContract.allowance(userAddress, spenderAddress);
-	    const allowanceDisplay = ethers.utils.formatEther(tokenAllowance);
-	    document.getElementById('lpAllowance').innerText = `ABAS ALLOWANCE ON CONTRACT: ${allowanceDisplay}`;
-	  
-	    return tokenAllowance.toString(); // Convert BigNumber to string
-	}
-
-        
-        async function fetchMasterContractApproved() {
-	    const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	    const masterContract = new ethers.Contract(LPBENTOAddress, LPBENTOtokenABI, signer);
-	    mastallowance = await masterContract.masterContractApproved(contractAddress, userAddress);
-	    document.getElementById('lpMasterAllowance').innerText = `Master Allowance T/F: ${mastallowance}`;
-	    document.getElementById('addLiquidityBtn').disabled = !mastallowance;
-	    
-	    
-	        // Check the master contract approval status and hide the button if approved
-	    const approveMasterContractBtn = document.getElementById('approveMasterContract22');
-	    if (mastallowance) {
-		approveMasterContractBtn.style.display = 'none'; // Hide the button
-	    } else {
-		approveMasterContractBtn.style.display = ''; // Show the button if not approved
-	    }
-	  
-	    return mastallowance; // Convert BigNumber to string
-	}
-
-        
-        
-        // Implement the approveToken function
-	async function approveToken() {
-	    try {
-	 	const tokenContract = new ethers.Contract(tokenAddress, tokenABI, signer);
-		const amountToApprove = ethers.utils.parseUnits("21000000", 18); // Example: Approve 1000 tokens (adjust the amount and decimals as needed)
-		const txResponse = await tokenContract.approve(spenderAddress, amountToApprove);
-		await txResponse.wait();
-		console.log("Token approved successfully");
-	    } catch (error) {
-		console.error("Failed to approve token: ", error);
-	    }
-	}
-	
-	
-        // Implement the approveToken function
-	async function approveMasterContract() {
-	    try {
-	 	const userAddress = await signer.getAddress(); // Assuming signer is already initialized
-	 	const masterContract = new ethers.Contract(LPBENTOAddress, LPBENTOtokenABI, signer);
-		const txResponse = await masterContract.setMasterContractApproval(userAddress, contractAddress, true, 0, "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000");
-		await txResponse.wait();
-		console.log("Master Contract approved successfully");
-		await fetchMasterContractApproved();
-	    } catch (error) {
-		console.error("Failed to approve Master Contract for you: ", error);
-	    }
-	}
-
-
-        function toFixed2(x) {
-	    if (Math.abs(x) < 1.0) {
-		const e = parseInt(x.toString().split('e-')[1]);
-		if (e) {
-		    x *= Math.pow(10, e - 1);
-		    x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
-		}
-	    } else {
-		let e = parseInt(x.toString().split('+')[1]);
-		if (e > 20) {
-		    e -= 20;
-		    x /= Math.pow(10, e);
-		    x += (new Array(e + 1)).join('0');
-		}
-	    }
-	    return x;
-	}
-
-        function scientificToDecimalStr(num) {
-	    const n = new Number(num);
-	    let str = n.toString();
-	    if (str.includes('e')) {
-		str = n.toFixed2(18); // Adjust the number of decimals as needed.
-	    }
-	    // Ensure no trailing zeros or unnecessary decimal points.
-	    return str.replace(/\.?0+$/, '');
-	}
-
-
-        async function addLiquidity() {
-            const contract = new ethers.Contract(contractAddress, contractABI, signer);
-            // Assuming the token uses 18 decimal places; adjust if it's different
-	    const ABASAmountInput = document.getElementById('tokenAmountInput').value;
-	    const ETHAmountInput = document.getElementById('ethAmountInput').value;
-			    
-	    var tokenAmountInput222 = new BigNumber(document.getElementById('tokenAmountInput').value);
-	    var weiMultiplier = new BigNumber("1e18");
-	    
-	    var amountInWeiOFABASToken = tokenAmountInput222.multipliedBy(weiMultiplier).toFixed(0);
-	    console.log("ELP Amount in ABAS : ", (amountInWeiOFABASToken));
-	    var tokenAmountInput222 = new BigNumber(document.getElementById('ethAmountInput').value);
-	    var weiMultiplier = new BigNumber("1e18");
-	    
-	    var amountInWeiOFWETHToken = tokenAmountInput222.multipliedBy(weiMultiplier).toFixed(0);
-	    console.log("ELP Amount in WETH : ", (amountInWeiOFWETHToken));
-			    // Example function to safely parse input values
-	    function parseInputValue(inputValue, decimals) {
-		    if (!inputValue || isNaN(inputValue)) {
-			return "0";
-		    }
-		    // Truncate the value to the allowed decimals
-		    const factor = 10 ** decimals;
-		    const truncatedValue = Math.floor(parseFloat(inputValue) * factor) / factor;
-		    const decimalString = scientificToDecimalStr(truncatedValue);
-		    return ethers.utils.parseUnits(decimalString.toString(), decimals);
-	    }
-
-
-
-	    const ABASAmount22 = toFixed2(ABASAmountInput);
-	    const ETHAmount22 = toFixed2(ETHAmountInput);
-	    console.log("ETH AMOUNTZ TOFIXED : ", ETHAmount22);
-	    const ABASAmount = parseInputValue(ABASAmount22, 18);
-	    const ETHAmount = parseInputValue(ETHAmount22, 18);
-            const tokenInputs = [
-                {
-                    token: '0x0B549125fbEA37E52Ee05FA388a3A0a7Df792Fa7',
-                    native: true,
-                    amount: amountInWeiOFABASToken, // Example amount
-                },
-                {
-                    token: '0x0000000000000000000000000000000000000000',
-                    native: true,
-                    amount: amountInWeiOFWETHToken, // Example amount
-                }
-            ];
-            const minPossible = ratiozLP * ABASAmount /1e18;
-            console.log("11111: ", minPossible);
-            const poolAddress = '0x911a89dE0430A5cE3699E57D508f8678Afa1fffc';
-            var minLiquidity = (minPossible * 99 / 100).toFixed(0);
-            console.log("11111: ", minLiquidity);
-            minLiquidity = ethers.utils.parseUnits(minLiquidity.toString(), 18);
-            console.log("min liq: ", minLiquidity.toString());
-            const address = await signer.getAddress();
-            const hexAddressWithoutPrefix = address.substring(2); // Remove '0x'
-            const dataHexString = "0x000000000000000000000000" + hexAddressWithoutPrefix;
-            const data = dataHexString;
-    
-            console.log(data);
-
-            try {
-                const txResponse = await contract.addLiquidity(tokenInputs, poolAddress, minLiquidity, data, {
-                    value: ETHAmount, // If the function is payable, specify the ETH amount to send
-                });
-                await txResponse.wait();
-                console.log("Liquidity added successfully");
-            } catch (error) {
-            	console.log("error: ", error);
-		if(error.data !== undefined){
-			
-		    	console.log("Error data: ", error.data);
-		    	const datazzzzzzz = error.data.message;
-		    	    if (datazzzzzzz.includes("TransferFrom failed")) {
-		    		alert("Lower your ABAS Amount you are over max");
-		    		}
-		    		
-		    		
-		    		
-		    		
-		    		  if (datazzzzzzz.includes("insufficient")) {
-		    	
-		    		alert("insufficient funds for gas.  Check stuff.  \n"+datazzzzzzz);
-		    		
-		    		}
-		    		
-		    		}
-                console.error("Failed to add liquidity:", error);
-            }
-        }
-        
-        
-        let tokenAllowance = ethers.BigNumber.from("0");
-        
-        
-        
-        
-        
-        
-        let reloadIntervalId, countdownIntervalId;
-
-	function startDataReload() {
-	    clearInterval(reloadIntervalId); // Clear any existing data reload interval
-	    clearInterval(countdownIntervalId); // Clear any existing countdown interval
-
-	    const reloadData = async () => {
-		// Your data fetching functions here
-		await connectWallet();
-		ratioz = await fetchLPTokenBalanceABAS(); //FETCH LP Asset balances
-		
-		await fetchBalances();
-		await fetchTokenApproved();
-		await fetchMasterContractApproved();
-		const maxBalance = await fetchTokenBalance();
-		var tokenalues =  ethers.utils.formatUnits(maxBalance, 18); // Assuming token uses 18 decimal places
-		console.log("1: ", tokenalues);
-		console.log("2: ", parseFloat(tokenAllowance.toString()));
-		if (tokenalues > parseFloat(tokenAllowance.toString())) {
-				addLiquidityBtn.style.visibility = 'hidden';
-				alert("Your input exceeds your allowance. Please approve more tokens before adding liquidity.");
-		} else {
-				addLiquidityBtn.style.visibility = 'visible';
-		}
-		// Add any other data fetching functions you need to reload
-		console.log('Data reloaded');
-	    };
-
-	    const updateCountdown = () => {
-		let countdown = 120; // Reset countdown to 15 seconds for each cycle
-		clearInterval(countdownIntervalId); // Ensure to clear previous interval to prevent duplicates
-		document.getElementById('reloadTimer').innerText = `Next reload in: ${countdown} seconds`;
-		countdownIntervalId = setInterval(() => {
-		    countdown--;
-		    if (countdown >= 0) {
-		        document.getElementById('reloadTimer').innerText = `Next reload in: ${countdown} seconds`;
-		    } else {
-		        clearInterval(countdownIntervalId); // Stop the countdown when it reaches 0
-		        countdown = 15; // Optional: Reset countdown for demonstration purposes
-		        // Note: The countdown will automatically reset due to reloadData being called again.
-		    }
-		}, 1000);
-	    };
-
-	    reloadIntervalId = setInterval(async () => {
-		await reloadData();
-		// The countdown is reset here via updateCountdown at the start of each data reload cycle
-		updateCountdown(); 
-	    }, 120000); // Set to reload data every 120 seconds
-
-	    // Initial load and start of the countdown
-	    reloadData();
-	    updateCountdown();
-	}
-		
-		
-		
-		
-		
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        let ratioz
-        window.onload = async () => {
-	    startDataReload(); // Restart reloading data and countdown on wallet connect
-            console.log("min liq3: ");
-	    await connectWallet();
-            console.log("min liq4: ");
-	    await fetchBalances(); // Fetch balances after wallet is connected
-	    
-            console.log("min liq5: ");
-	    ratioz = await fetchLPTokenBalanceABAS(); // Fetch LP Asset balances
-	    await fetchLPTokenBalanceETH(); // Fetch LP Asset balances
-	    await fetchTokenApproved();
-	    await fetchMasterContractApproved();
-	    await fetchMinAmountOfTokens();
-	};
-        document.getElementById('connectWalletBtn').addEventListener('click', async () => {
-	    startDataReload(); // Restart reloading data and countdown on wallet connect
-        
-            console.log("min liq1: ");
-            await connectWallet();
-            console.log("min liq2: ");
-            await fetchBalances(); // Fetch balances after wallet is connected
-	    ratioz = await fetchLPTokenBalanceABAS(); //FETCH LP Asset balances
-	    await fetchLPTokenBalanceETH(); //FETCH LP Asset balances
-	    await fetchTokenApproved();
-	    await fetchMasterContractApproved();
-	    await fetchMinAmountOfTokens();
-	});
-        maxTokenBtn.addEventListener('click', async () => {
-	    const maxBalance = await fetchTokenBalance();
-	    tokenAmountInput.value = ethers.utils.formatUnits(maxBalance, 18); // Assuming token uses 18 decimal places
-	    ethAmountInput.value = ratioz * ethers.utils.formatUnits(maxBalance, 18); // Assuming token uses 18 decimal places
-	    var tokenalues =  ethers.utils.formatUnits(maxBalance, 18); // Assuming token uses 18 decimal places
-	    console.log("!!!!!: 1:: ",tokenalues);
-	    console.log("@@@@@: 2:: ",parseFloat(tokenAllowance.toString()));
-	    if (tokenalues > parseFloat(tokenAllowance.toString())) {
-	    	    addLiquidityBtn.style.visibility = 'hidden';
-	  	    alert("Your input exceeds your allowance. Please approve more tokens before adding liquidity.");
-	    } else {
-	    	    addLiquidityBtn.style.visibility = 'visible';
-	    }
-	});
-	// Add click event listener to the approve button
-	document.getElementById('approveTokenBtn').addEventListener('click', approveToken);
-	
-        	// Add click event listener to the approve button
-	document.getElementById('approveMasterContract22').addEventListener('click', approveMasterContract);
-	
-        
-        document.getElementById('addLiquidityBtn').addEventListener('click', addLiquidity);
-        
-        // Assuming ratioz is globally available or passed appropriately
-
-	const tokenAmountInput = document.getElementById('tokenAmountInput');
-	const ethAmountInput = document.getElementById('ethAmountInput');
-
-	// Convert ETH to ABAS based on the user's input
-	ethAmountInput.addEventListener('input', () => {
-	    if (!ratioz || ratioz === 0) return; // Check if ratioz is valid
-	    const ethAmount = parseFloat(ethAmountInput.value);
-	    const tokenAmount = ethAmount / ratioz; // Convert ETH to ABAS
-	    tokenAmountInput.value = isNaN(tokenAmount) ? '' : tokenAmount; // Update tokenAmountInput
-	});
-
-	// Convert ABAS to ETH based on the user's input
-	tokenAmountInput.addEventListener('input', () => {
-	    if (!ratioz || ratioz === 0) return; // Check if ratioz is valid
-	    const tokenAmount = parseFloat(tokenAmountInput.value);
-	    const ethAmount = tokenAmount * ratioz; // Convert ABAS to ETH
-	    ethAmountInput.value = isNaN(ethAmount) ? '' : ethAmount; // Update ethAmountInput
-	});
-		
-	// Define a variable outside of your event listener to track the last time the alert was shown
-	let lastAlertTime = 0;
-
-	tokenAmountInput.addEventListener('input', () => {
-	    const inputAmount = ethers.utils.parseUnits(tokenAmountInput.value || "0", 18);
-	    const addLiquidityBtn = document.getElementById('addLiquidityBtn');
-	    const now = Date.now(); // Current timestamp in milliseconds
-	    const diff = now - lastAlertTime; // Time difference since last alert
-
-	    if (inputAmount.gt(tokenAllowance)) {
-		addLiquidityBtn.style.visibility = 'hidden';
-		if (diff > 15000) { // 15 seconds have passed
-		    alert("Your input exceeds your allowance. Please approve more tokens before adding liquidity.");
-		    lastAlertTime = now; // Reset the last alert time
-		}
-	    } else {
-		addLiquidityBtn.style.visibility = 'visible';
-	    }
-	});
     // Your existing conversion logic...
 
     </script>
 </body>
 </html>
-
+ 
