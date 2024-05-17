@@ -246,7 +246,7 @@
       displayedRows() {
       const start = this.currentPage * this.rowsPerPage;
       const end = start + this.rowsPerPage;
-      return [...this.imageRows].reverse().slice(start, end);
+      return [...this.imageRows].slice(start, end);
     }
   },
   mounted() {
@@ -276,7 +276,20 @@
       // Add the new row at the beginning of the imageRows array
       this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
     },
-    async testInside(rowIndex, imageIndex, roundNumber) {
+    async testInside(rowIndex, imageIndex, roundNumber, tickets) {
+    
+     let newImagesfff = new Array(10).fill(null).map((_, index) => ({
+    url: `https://untouchable2k.github.io/img/lotteryBalls/${index + 1}n.png`
+  }));
+
+    console.log("This: ", tickets);
+          tickets.forEach(ticket => {
+        if (ticket >= 1 && ticket <= 10) {
+          newImagesfff[ticket - 1] = {  url: `https://untouchable2k.github.io/img/lotteryBalls/${ticket}r.png` }
+        }
+      });
+      
+      
 	var test = rowIndex -1;
       // Create a new row object with the roundNumber incremented and new images array
       const newRoundNumber = roundNumber;
@@ -286,15 +299,48 @@
       if(this.imageRows.length  < 1 ){
       
       
-	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImagesfff });
 	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
       
-      }else if(roundNumber > this.imageRows[this.imageRows.length-1].roundNumber){
+      }else if(roundNumber < this.imageRows[this.imageRows.length-1].roundNumber){
 	
       console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
 	      // Add the new row at the beginning of the imageRows array
-	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImages });
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImagesfff });
 	      this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
+	}
+    },
+    async testInside2f(rowIndex, imageIndex, roundNumber, tickets) {
+    
+     let newImagesfff = new Array(10).fill(null).map((_, index) => ({
+    url: `https://untouchable2k.github.io/img/lotteryBalls/${index + 1}n.png`
+  }));
+
+    console.log("This: ", tickets);
+          tickets.forEach(ticket => {
+        if (ticket >= 1 && ticket <= 10) {
+          newImagesfff[ticket - 1] = {  url: `https://untouchable2k.github.io/img/lotteryBalls/${ticket}r.png` }
+        }
+      });
+      
+	var test = rowIndex -1;
+      // Create a new row object with the roundNumber incremented and new images array
+      const newRoundNumber = roundNumber;
+      const newImages = new Array(10).fill(null).map((_, index) => ({ url: `https://untouchable2k.github.io/img/lotteryBalls/${index + 1}r.png` }));  // Set the swap image for each image in the new row
+      
+      console.log("Round Number : ", roundNumber);
+      if(this.imageRows.length  < 1 && tickets.length !=0 ){
+      
+      
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImagesfff });
+	      //this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
+      
+      }else if(roundNumber < this.imageRows[this.imageRows.length-1].roundNumber  && tickets.length !=0 ){
+	
+      console.log("Prev round Number: ", this.imageRows[this.imageRows.length-1].roundNumber);
+	      // Add the new row at the beginning of the imageRows array
+	      await this.addImageRow({ roundNumber: newRoundNumber, images: newImagesfff });
+	      //this.swapImage2(test, imageIndex);  // This swaps the image in the specified row and index.
 	}
     },
     nextPage() {
@@ -353,7 +399,7 @@
 		console.log("data 0 variable: ", variable);
 		console.log("data 0 roundID: ", roundID);
 		console.log("data 0 start: ", start);
-		this.testInside(start, variable-1, roundID);
+	//	this.testInside(start, variable-1, roundID);
 		// Process logs or update data
 	}
       } catch (error) {
@@ -422,7 +468,31 @@
 	    "payable": false,
 	    "stateMutability": "view",
 	    "type": "function"
-	}];
+	},
+	{
+    "constant": true,
+    "inputs": [
+      {
+        "name": "buyer",
+        "type": "address"
+      },
+      {
+        "name": "round",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTicketsOfBuyerForRound",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint32[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+];
 	const contract2 = new ethers.Contract(this.contractAddress, getWinnersABI, this.provider);
       
 	const { winners, tickets, rewardsDistributed } = await contract2.getWinners();
@@ -431,8 +501,12 @@
         var rewardDist2 = rewardsDistributed;
 
 
-	for(var x=0; x< parseInt(round); x++){
-		console.log(logs);
+	for(var x=parseInt(round)-1; x>=0; x--){
+		console.log("Contract2: ", contract2);
+		
+		var ticketsBought = await contract2.getTicketsOfBuyerForRound(userAddy, x);
+		console.log("User to check for: ", userAddy);
+		console.log("WHAT DID WE BUY FOR ROUND:x:  ",x," : Tickets: ",ticketsBought );
 		//var winnerz = logs[x].topics[1].substring(26,66);
 		//var winnerzWhole = logs[x].topics[1];
 		//console.log("Winer: ",winnerz);
@@ -449,9 +523,14 @@
 		console.log("data 0 ticketsTot2: ", ticketsTot2[x]);
 		console.log("data 0 x: ", x);
 		console.log("signer: ", signer);
-		if(winners2[x] == signer){
+		
+		if(winners2[x] == userAddy){
+		
+		this.testInside(start, ticketsTot2[x]-1, x, ticketsBought);
+		}else{
+		
+		this.testInside2f(start, ticketsTot2[x]-1, x, ticketsBought);
 		}
-		this.testInside(start, ticketsTot2[x]-1, x);
 		//this.testInside(start, variable-1, roundID, winnerz);
 		// Process logs or update data
 	}
