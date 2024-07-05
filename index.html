@@ -73,7 +73,7 @@
                             <li>
                                 <a href="howtostake.html"style="font-size:1.1em">How to Stake</a>
                             </li>
-                            <li>
+                            <li>10
                                 <a href="howtomine.html"style="font-size:1.1em">How to Mine</a>
                             </li>
                             <li>
@@ -133,7 +133,10 @@
 <div id="YourBalanceBNB">Your BNB Balance: ? Connect Wallet</div>
 <div id="YourAllowanceBNBTC">Your BNBTC Allowance: ? Connect Wallet</div>
     <button id="getTestnetTokens">Get BNBTC Test Tokens (Testnet Only)</button><br>
-   
+   	
+<div id="reloadID">Stats will reload in 20 seconds</div>
+<div id="reloadID2">Stats2 will reload in 20 seconds</div>
+	
    
 	    </div>
 	    <div class="column2 right-column">
@@ -224,7 +227,7 @@
       swapImageName: 'http://127.0.0.1:8080/img/zkBitcoin.png',
       provider: null,
       winnerImages: 'http://127.0.0.1:8080/img/image1.jpg',
-      contractAddress: '0xAFbD16EAcC9b31AE7fC3626863195633F81F5983',
+      contractAddress: '0xE419ccAB63605A8eE6b25Ee84b2eEb7e22D78635',
       abi: [{
   "anonymous": false,
   "inputs": [
@@ -237,6 +240,7 @@
 }
 ],
       contract: null,
+      reloadCounter: 20 // Counter to track the countdown seconds
     };
   },
   computed: {
@@ -252,6 +256,21 @@
   mounted() {
     this.initializeEthereum();
     this.fetchAuctions();
+    
+    
+    // Update the counter every second
+    setInterval(() => {
+    document.getElementById('reloadID').innerText = `Stats will reload in ${this.reloadCounter} seconds`;
+      if (this.reloadCounter > 0) {
+        this.reloadCounter--;
+      } else {
+        this.fetchAuctions();
+        this.reloadCounter = 20; // Reset the counter after reload
+      }
+    }, 1000);
+    
+    
+    
   },
   methods: {
     swapImage(rowIndex, imageIndex) {
@@ -415,7 +434,7 @@
                     signer = provider.getSigner();
                     const { chainId } = await provider.getNetwork();
             	     userAddy = await signer.getAddress();
-                    document.getElementById('YourAddress').innerText = `Your connected address: ${userAddy}`;
+                    document.getElementById('YourAddressbsc').innerText = `Your connected address: ${userAddy}`;
                     if (chainId !== 42161) { // Check if the chain ID is not 324
                                         alert('You are on the wrong network. Please switch to the correct network. Arbitrum One Blockchain, ChainID: 42161');
                                         // Optionally, try to switch the user's network using window.ethereum.request
@@ -431,6 +450,8 @@
 	},async fetchAuctions() {
      await connectWallet();
       try {
+      
+        this.imageRows = [];
       const contract = new ethers.Contract(this.contractAddress, this.contractABI, this.provider);
       const round = await contract.currentRound();
   	console.log("Current Round:", round.toString());
@@ -491,48 +512,93 @@
     "payable": false,
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "buyer",
+        "type": "address"
+      }
+    ],
+    "name": "getTicketsOfBuyer",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "name": "",
+        "type": "uint32[][]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   }
-];
+  ];
 	const contract2 = new ethers.Contract(this.contractAddress, getWinnersABI, this.provider);
       
 	const { winners, tickets, rewardsDistributed } = await contract2.getWinners();
         var winners2 = winners;
         var ticketsTot2 = tickets;
         var rewardDist2 = rewardsDistributed;
+        var test = await contract2.getTicketsOfBuyer(userAddy);
+        console.log("Testing test3: ", test);
+        console.log("user addy: ", userAddy);
+        console.table(test);
+        console.table("FFFFFFFF L : ", test[1][2]);
 
 
-	for(var x=parseInt(round)-1; x>=0; x--){
-		console.log("Contract2: ", contract2);
-		
-		var ticketsBought = await contract2.getTicketsOfBuyerForRound(userAddy, x);
-		console.log("User to check for: ", userAddy);
-		console.log("WHAT DID WE BUY FOR ROUND:x:  ",x," : Tickets: ",ticketsBought );
-		//var winnerz = logs[x].topics[1].substring(26,66);
-		//var winnerzWhole = logs[x].topics[1];
-		//console.log("Winer: ",winnerz);
-		//console.log("Winer W:  ",winnerzWhole);
-		//winnerz = "0x"+winnerz;
-		//var dataz = logs[x].data;
-		//console.log("zero data: ", dataz);
-		//console.log("zero data: ", dataz.substring(0,66));
-		//console.log("zero data2: ", dataz.substring(67,131));
-		var start = this.imageRows.length +1;
-		var variable = 1;
-		var roundID = x;
-		console.log("data 0 start: ", start);
-		console.log("data 0 ticketsTot2: ", ticketsTot2[x]);
-		console.log("data 0 x: ", x);
-		console.log("signer: ", signer);
-		
-		if(winners2[x] == userAddy){
-		
-		this.testInside(start, ticketsTot2[x]-1, x, ticketsBought);
-		}else{
-		
-		this.testInside2f(start, ticketsTot2[x]-1, x, ticketsBought);
+        console.log("Testing ", test[1].length);
+	var roundstouse =new Array(0);
+	var ticketsff = [];
+	for(var y=0; y< test[0].length; y++){
+		roundstouse.push(test[0][y]);
+		  ticketsff[y] = []; // Initialize an empty array at each index of ticketsff
+		for(var z=0; z<test[1][y].length; z++){
+			ticketsff[y].push(test[1][y][z]);
 		}
+		console.log("Round: ",parseInt(roundstouse[y]), " tickets: ", ticketsff);
+	}
+	for(var x=roundstouse.length - 1; x>=0; x--){
+		if(ticketsff[x].length != 0){
+			var ticketsBought = await contract2.getTicketsOfBuyerForRound(userAddy, roundstouse[x]);
+	
+		
+		//for(var x=parseInt(round)-1; x>=0; x--){
+			console.log("Contract2: ", contract2);
+			
+		//	var ticketsBought = await contract2.getTicketsOfBuyerForRound(userAddy, x);
+			console.log("User to check for: ", userAddy);
+			console.log("WHAT DID WE BUY FOR ROUND:x:  ",x," : Tickets: ",ticketsBought );
+			//var winnerz = logs[x].topics[1].substring(26,66);
+			//var winnerzWhole = logs[x].topics[1];
+			//console.log("Winer: ",winnerz);
+			//console.log("Winer W:  ",winnerzWhole);
+			//winnerz = "0x"+winnerz;
+			//var dataz = logs[x].data;
+			//console.log("zero data: ", dataz);
+			//console.log("zero data: ", dataz.substring(0,66));
+			//console.log("zero data2: ", dataz.substring(67,131));
+			var start = this.imageRows.length +1;
+			var variable = 1;
+			var roundID = x;
+			console.log("data 0 start: ", start);
+			console.log("data 0 ticketsTot2: ", ticketsTot2[x]);
+			console.log("data 0 x: ", x);
+			console.log("signer: ", signer);
+			
+			if(winners2[x] == userAddy){
+			
+			this.testInside(start, ticketsTot2[x]-1, x, ticketsBought);
+			}else{
+			
+			this.testInside2f(start, ticketsTot2[x]-1, x, ticketsBought);
+			}
 		//this.testInside(start, variable-1, roundID, winnerz);
 		// Process logs or update data
+		}
 	}
       } catch (error) {
       
@@ -571,7 +637,7 @@
       provider: null,
       provider2: null,
       winnerImages: 'http://127.0.0.1:8080/img/image1.jpg',
-      contractAddress: '0xAFbD16EAcC9b31AE7fC3626863195633F81F5983',
+      contractAddress: '0xE419ccAB63605A8eE6b25Ee84b2eEb7e22D78635',
       TokencontractAddress: '0x59984dBdda327dAF68285a896ACe398A739F80c3',
       totalTicketsSold: 0,
       buyTicketAmount: 1, // Set initial value here
@@ -584,6 +650,7 @@
 		TickestSold: 0,
 		TotalTickets: 0,
 	ticketPrice: 0,
+	reloadCounter2: 20,
 		
     };
   },
@@ -610,6 +677,26 @@
     this.fetchAuctions();
     this.GetStats();
     this.getAuctionTotal();
+    
+    
+     
+    // Update the counter every second
+    setInterval(() => {
+    document.getElementById('reloadID2').innerText = `Stats will reload in ${this.reloadCounter2} seconds`;
+      if (this.reloadCounter2 > 0) {
+        this.reloadCounter2--;
+      } else {
+        this.fetchAuctions();
+        this.GetStats();
+        this.getAuctionTotal();
+        this.reloadCounter2 = 20; // Reset the counter after reload
+      }
+    }, 1000);
+    
+    
+    
+    
+    
   },
   methods: {
     swapImage(rowIndex, imageIndex) {
@@ -716,7 +803,8 @@
                     this.signer2 = this.provider2.getSigner();
                     const { chainId } = await this.provider2.getNetwork();
             	     userAddy = await this.signer2.getAddress();
-                    document.getElementById('YourAddress').innerText = `Your connected address: ${userAddy}`;
+            	     
+                    document.getElementById('YourAddressbsc').innerText = `Your connected address: ${userAddy}`;
                     if (chainId !== 42161) { // Check if the chain ID is not 324
                                         alert('You are on the wrong network. Please switch to the correct network. Arbitrum One Blockchain, ChainID: 42161');
                                         // Optionally, try to switch the user's network using window.ethereum.request
@@ -733,6 +821,8 @@
     async fetchAuctions() {
      await connectWallet();
       try {
+      console.log("CHECK IMAGE ROWS: ", this.imageRows);
+      this.imageRows=[];
       const contract = new ethers.Contract(this.contractAddress, this.contractABI, this.provider);
       const round = await contract.currentRound();
   	console.log("Current Round:", round.toString());
@@ -861,7 +951,7 @@
 	}];
 		  
 		   if (typeof window.ethereum !== 'undefined') {
-                try {
+		try {
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
                     provider2 = new ethers.providers.Web3Provider(window.ethereum);
                     signer2 = provider2.getSigner();
@@ -869,8 +959,15 @@
             	     userAddy = await signer2.getAddress();
                     
 					this.contract3 = new ethers.Contract(this.contractAddress, buyTicketsABI, signer2);
+					
+				// Estimate the gas limit
+		const estimatedGasLimit = await this.contract3.estimateGas.buyTickets(this.buyTicketAmount);
+
+		// Set the gas limit to 150% of the estimated gas limit
+		const gasLimit = estimatedGasLimit.mul(3).div(2);
+		
 					console.log("Tickets to buy: ", this.buyTicketAmount);
-        const transactionResponse = await this.contract3.buyTickets(this.buyTicketAmount);
+        const transactionResponse = await this.contract3.buyTickets(this.buyTicketAmount, { gasLimit });
         await transactionResponse.wait();  // Wait for the transaction to be mined
         console.log('Tickets bought successfully');
 					
@@ -1426,10 +1523,10 @@
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
                     provider = new ethers.providers.Web3Provider(window.ethereum);
                     signer = provider.getSigner();
-                    document.getElementById('addLiquidityBtn').disabled = false;
+                    //document.getElementById('addLiquidityBtn').disabled = false;
                     const { chainId } = await provider.getNetwork();
             	     userAddy = await signer.getAddress();
-                    document.getElementById('YourAddress').innerText = `Your connected address: ${userAddy}`;
+                    document.getElementById('YourAddressbsc').innerText = `Your connected address: ${userAddy}`;
                     if (chainId !== 42161) { // Check if the chain ID is not 324
                                         alert('You are on the wrong network. Please switch to the correct network. Arbitrum One Blockchain, ChainID: 42161');
                                         // Optionally, try to switch the user's network using window.ethereum.request
