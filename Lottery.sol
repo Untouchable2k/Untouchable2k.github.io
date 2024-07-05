@@ -1,9 +1,24 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ConfirmedOwner} from "@chainlink/contracts@1.1.1/src/v0.8/shared/access/ConfirmedOwner.sol";
+import {VRFV2WrapperConsumerBase} from "@chainlink/contracts@1.1.1/src/v0.8/vrf/VRFV2WrapperConsumerBase.sol";
+import {LinkTokenInterface} from "@chainlink/contracts@1.1.1/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 
-contract Lottery {
+contract bnbtcLottery is VRFV2WrapperConsumerBase, ConfirmedOwner {
+    event RequestSent(uint256 requestId, uint32 numWords);
+    event RequestFulfilled(uint256 requestId, uint256[] randomWords, uint256 payment);
+    event TicketPurchased(address indexed buyer, uint32 ticketNumber, uint256 roundId);
+    event Winner(address indexed winner, uint256 roundId, uint256 amount);
+    event WinnerSelected(address indexed winner, uint32 ticketNumber, uint256 roundId);
+
+    struct RequestStatus {
+        uint256 paid; // amount paid in link
+        bool fulfilled; // whether the request has been successfully fulfilled
+        uint256[] randomWords;
+    }
+
     struct Round {
         uint256 maxTickets;
         uint256 soldTickets;
@@ -27,36 +42,40 @@ contract Lottery {
         uint256 deployerRewardPercentage;
     }
 
-    NextRoundSettings nextRoundSettings;	
-    
-    mapping(address => uint256) public claimedTo;
+    uint32 private callbackGasLimit = 500000;
+    uint16 private requestConfirmations = 3;
+    uint32 private numWords = 1;
+    address private linkAddress = 0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06; // BNBTC testnet LINK address
+    address private wrapperAddress = 0x699d428ee890d55D56d5FC6e26290f3247A762bd; // BNBTC testnet VRF Wrapper address
 
-    uint256 public currentRound;
-    address payable public deployer;
-    IERC20 public acceptedToken;
-
+    mapping(uint256 => RequestStatus) public s_requests;
     mapping(uint256 => Round) public rounds;
     mapping(uint256 => address) public roundWinners;
     mapping(uint256 => uint32) public roundWinningTickets;
     mapping(uint256 => bool) public roundRewardsDistributed;
+    mapping(address => uint256) public claimedTo;
 
-    event TicketPurchased(address indexed buyer, uint32 ticketNumber, uint256 roundId);
-    event Winner(address indexed winner, uint256 roundId, uint256 amount);
-    event WinnerSelected(address indexed winner, uint32 ticketNumber, uint256 roundId);
+    uint256[] public requestIds;
+    uint256 public lastRequestId;
+    uint256 public currentRound;
 
+    NextRoundSettings public nextRoundSettings;
+    address payable public deployer;
+    IERC20 public acceptedToken;
     address public donationAddress;
 
     constructor(
         uint256 _maxTickets,
         uint256 _ticketPrice,
-        address _acceptedToken,
         uint256 _winnerRewardPercentage,
-        uint256 _deployerRewardPercentage,
-        address _donationAddress
-    ) {
+        uint256 _deployerRewardPercentage
+    ) 
+        ConfirmedOwner(msg.sender)
+        VRFV2WrapperConsumerBase(linkAddress, wrapperAddress)
+    {
         deployer = payable(msg.sender);
-        acceptedToken = IERC20(_acceptedToken);
-        donationAddress = _donationAddress;
+        acceptedToken = IERC20(0x59984dBdda327dAF68285a896ACe398A739F80c3);
+        donationAddress = 0xB311127Cda9AfA828CDA41E036E681050e81cf77;
 
         Round storage round = rounds[currentRound];
         round.maxTickets = _maxTickets;
@@ -65,6 +84,55 @@ contract Lottery {
         round.deployerRewardPercentage = _deployerRewardPercentage;
     }
 
+    function requestRandomWords() internal returns (uint256 requestId) {
+        requestId = requestRandomness(callbackGasLimit, requestConfirmations, numWords);
+        s_requests[requestId] = RequestStatus({
+            paid: VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit),
+            randomWords: new uint256[](0),
+            fulfilled: false
+        });
+        requestIds.push(requestId);
+        lastRequestId = requestId;
+        emit RequestSent(requestId, numWords);
+        return requestId;
+    }
+
+     function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
+        require(s_requests[_requestId].paid > 0, "request not found");
+        s_requests[_requestId].fulfilled = true;
+        s_requests[_requestId].randomWords = _randomWords;
+        emit RequestFulfilled(_requestId, _randomWords, s_requests[_requestId].paid);
+
+        Round storage round = rounds[currentRound];
+        uint32 winningTicket = uint32((_randomWords[0] % round.maxTickets) + 1); // Generate number between 1 and round.maxTickets
+
+        address winner = round.ticketOwners[winningTicket];
+        round.winnerAddress = winner;
+        round.winnerReward = (round.ticketPrice * round.maxTickets * round.winnerRewardPercentage) / 100;
+        round.deployerReward = (round.ticketPrice * round.maxTickets * round.deployerRewardPercentage) / 100;
+
+        round.donationAmount = (round.ticketPrice * round.maxTickets) - (round.winnerReward + round.deployerReward);
+
+        emit WinnerSelected(winner, winningTicket, currentRound);
+        roundWinners[currentRound] = winner;
+        roundWinningTickets[currentRound] = winningTicket;
+
+        currentRound++;
+        setNextRoundSettings(round);
+        delete nextRoundSettings;
+    }
+        
+
+    function getRequestStatus(uint256 _requestId) external view returns (uint256 paid, bool fulfilled, uint256[] memory randomWords) {
+        require(s_requests[_requestId].paid > 0, "request not found");
+        RequestStatus memory request = s_requests[_requestId];
+        return (request.paid, request.fulfilled, request.randomWords);
+    }
+
+    function withdrawLink() public onlyOwner {
+        LinkTokenInterface link = LinkTokenInterface(linkAddress);
+        require(link.transfer(msg.sender, link.balanceOf(address(this))), "Unable to transfer");
+    }
 
     function setMaxTicketsForNextRound(uint256 _maxTickets) public {
         require(msg.sender == deployer, "Only the deployer can change the max tickets");
@@ -105,9 +173,10 @@ contract Lottery {
         emit TicketPurchased(msg.sender, uint32(round.soldTickets), currentRound);
 
         if (round.soldTickets == round.maxTickets) {
-            selectWinner();
+            requestRandomWords();
         }
     }
+    /*
 
     function selectWinner() private {
         Round storage round = rounds[currentRound];
@@ -117,17 +186,19 @@ contract Lottery {
         round.winnerReward = (round.ticketPrice * round.maxTickets * round.winnerRewardPercentage) / 100;
         round.deployerReward = (round.ticketPrice * round.maxTickets * round.deployerRewardPercentage) / 100;
 
-        // Calculate donation amount here and store it in the round struct
         round.donationAmount = (round.ticketPrice * round.maxTickets) - (round.winnerReward + round.deployerReward);
 
         emit WinnerSelected(winner, winningTicket, currentRound);
         roundWinners[currentRound] = winner;
         roundWinningTickets[currentRound] = winningTicket;
 
-        // Start a new round immediately
         currentRound++;
+        setNextRoundSettings(round);
+        delete nextRoundSettings;
+    }
+    */
 
-        // If new settings for the next round have been set, replace the corresponding settings
+    function setNextRoundSettings(Round storage round) private {
         if (nextRoundSettings.maxTicketsSet) {
             rounds[currentRound].maxTickets = nextRoundSettings.maxTickets;
         } else {
@@ -145,9 +216,6 @@ contract Lottery {
             rounds[currentRound].winnerRewardPercentage = round.winnerRewardPercentage;
             rounds[currentRound].deployerRewardPercentage = round.deployerRewardPercentage;
         }
-
-        // Reset the settings for the next round
-        delete nextRoundSettings;
     }
 
     function withdrawReward(uint256 roundId) public {
@@ -158,84 +226,95 @@ contract Lottery {
         acceptedToken.transfer(round.winnerAddress, round.winnerReward);
         acceptedToken.transfer(deployer, round.deployerReward);
 
-        // Transfer the calculated donation amount
         if (round.donationAmount > 0) {
             acceptedToken.transfer(donationAddress, round.donationAmount);
         }
 
-        emit Winner(round.winnerAddress, round.winnerReward, roundId);
+        emit Winner(round.winnerAddress, roundId, round.winnerReward);
         roundRewardsDistributed[roundId] = true;
     }
 
-    function withdrawRewardMultiAuto(uint256 [] memory days) public {
-    	uint start = claimedTo[msg.sender];
-    	uint TotToRec = 0;
-    	uint DeployerToRec = 0;
-    	uint dono = 0;
-    	for(int x=start; x<=roundId; x++){
-        	Round storage round = rounds[x];
-    		if(!roundRewardsDistributed[x] && msg.sender == round.winnerAddress){
-    		 TotToRec = TotToRec + round.winnerReward;
-    		 DeployerToRec = DeployerToRec + round.deployerReward;
-    		 dono = dono + round.donationAmount;
-    		 
-        	roundRewardsDistributed[roundId] = true;
-    		}
-    	}
-    	
-        acceptedToken.transfer(round.winnerAddress, TotToRec);
-        acceptedToken.transfer(deployer, DeployerToRec);
+    function smartClaim() public {
+        uint256[] memory totalRounds = getArrayOfRoundsWinnersUnclaimed(msg.sender);
+        withdrawRewardMultiArray(totalRounds);
+        claimedTo[msg.sender] = currentRound - 1;
+    }
 
-        // Transfer the calculated donation amount
-        if (dono > 0) {
-            acceptedToken.transfer(donationAddress, dono);
+    function setClaimedTo(uint256 RoundNumber) public {
+        claimedTo[msg.sender] = RoundNumber;
+    }
+
+    function smartClaimTotalAmount(address user) public view returns (uint256 Reward) {
+        uint256[] memory totalRounds = getArrayOfRoundsWinnersUnclaimed(user);
+        uint256 totalToReceive = 0;
+        for (uint256 x = 0; x < totalRounds.length; x++) {
+            Round storage round = rounds[totalRounds[x]];
+            if (!roundRewardsDistributed[totalRounds[x]] && user == round.winnerAddress) {
+                totalToReceive += round.winnerReward;
+            }
+        }
+        return totalToReceive;
+    }
+
+    function getArrayOfRoundsWinnersAlreadyClaimed(address user) public view returns (uint256[] memory) {
+        uint256 start = 0;
+        uint256 count = 0;
+        uint256[] memory winDays = new uint256[](currentRound - start + 1);
+        for (uint256 x = start; x <= currentRound; x++) {
+            Round storage round = rounds[x];
+            if (roundRewardsDistributed[x] && user == round.winnerAddress) {
+                winDays[count] = x;
+                count++;
+            }
+        }
+        uint256[] memory winDays2 = new uint256[](count);
+        for (uint256 x = 0; x < count; x++) {
+            winDays2[x] = winDays[x];
+        }
+        return winDays2;
+    }
+
+    function getArrayOfRoundsWinnersUnclaimed(address user) public view returns (uint256[] memory) {
+        uint256 start = claimedTo[user];
+        uint256 count = 0;
+        uint256[] memory winDays = new uint256[](currentRound - start + 1);
+        for (uint256 x = start; x <= currentRound; x++) {
+            Round storage round = rounds[x];
+            if (!roundRewardsDistributed[x] && user == round.winnerAddress) {
+                winDays[count] = x;
+                count++;
+            }
+        }
+        uint256[] memory winDays2 = new uint256[](count);
+        for (uint256 x = 0; x < count; x++) {
+            winDays2[x] = winDays[x];
+        }
+        return winDays2;
+    }
+
+    function withdrawRewardMultiArray(uint256[] memory roundIds) public {
+        uint256 totalToReceive = 0;
+        uint256 deployerToReceive = 0;
+        uint256 donation = 0;
+        for (uint256 x = 0; x < roundIds.length; x++) {
+            Round storage round = rounds[roundIds[x]];
+            if (!roundRewardsDistributed[roundIds[x]] && msg.sender == round.winnerAddress) {
+                totalToReceive += round.winnerReward;
+                deployerToReceive += round.deployerReward;
+                donation += round.donationAmount;
+                roundRewardsDistributed[roundIds[x]] = true;
+                emit Winner(round.winnerAddress, x, round.winnerReward);
+            }
         }
 
-        emit Winner(round.winnerAddress, roundId, roundId);
-    }
-    
-    function getArrayOfRoundsWinners() returns(uint256 []) public {
-    	uint [roundId - start+1] WinDays;
-    	for(int x=start; x<=roundId; x++){
-        	Round storage round = rounds[x];
-    		if(!roundRewardsDistributed[x] && msg.sender == round.winnerAddress){
-    		 WinDays.push(x);
-    		}
-    	}
-    	
-    	return WinDays;
-    }
+        acceptedToken.transfer(msg.sender, totalToReceive);
+        acceptedToken.transfer(deployer, deployerToReceive);
 
-    function withdrawRewardMultiArray(uint256 [] memory roundIdzzzz) public {
-    	uint start = claimedTo[msg.sender];
-    	uint TotToRec = 0;
-    	uint DeployerToRec = 0;
-    	uint dono = 0;
-    	for(int x=0; x<=roundIdzzzz.length; x++){
-        	Round storage round = rounds[roundIdzzzz[x]];
-    		if(!roundRewardsDistributed[roundIdzzzz[x]] && msg.sender == roundIdzzzz[x].winnerAddress){
-    		 TotToRec = TotToRec + round.winnerReward;
-    		 DeployerToRec = DeployerToRec + round.deployerReward;
-    		 dono = dono + round.donationAmount;
-    		 
-        	roundRewardsDistributed[roundIdzzzz[x]] = true;
-    		}
-    	}
-    	
-        acceptedToken.transfer(round.winnerAddress, TotToRec);
-        acceptedToken.transfer(deployer, DeployerToRec);
-
-        // Transfer the calculated donation amount
-        if (dono > 0) {
-            acceptedToken.transfer(donationAddress, dono);
+        if (donation > 0) {
+            acceptedToken.transfer(donationAddress, donation);
         }
-        
-        emit Winner(round.winnerAddress, roundId, roundId);
     }
-    
-    
-    
-    
+
     function withdrawRewardForWinner(uint256 roundId) public {
         require(msg.sender == deployer, "Only the deployer can trigger a payout");
         require(!roundRewardsDistributed[roundId], "Reward already distributed");
@@ -244,15 +323,13 @@ contract Lottery {
         acceptedToken.transfer(round.winnerAddress, round.winnerReward);
         acceptedToken.transfer(deployer, round.deployerReward);
 
-        // Transfer the calculated donation amount
         if (round.donationAmount > 0) {
             acceptedToken.transfer(donationAddress, round.donationAmount);
         }
 
-        emit Winner(round.winnerAddress, round.winnerReward, roundId);
+        emit Winner(round.winnerAddress, roundId, round.winnerReward);
         roundRewardsDistributed[roundId] = true;
     }
-
 
     function withdrawRewardForAllPendingWinners() public {
         require(msg.sender == deployer, "Only the deployer can trigger payouts");
@@ -275,7 +352,6 @@ contract Lottery {
                 counter++;
             }
         }
-        // Copy the results into a smaller array
         uint32[] memory result = new uint32[](counter);
         for (uint32 i = 0; i < counter; i++) {
             result[i] = tickets[i];
@@ -298,7 +374,6 @@ contract Lottery {
                     counter++;
                 }
             }
-            // Copy the results into a smaller array
             uint32[] memory result = new uint32[](counter);
             for (uint32 j = 0; j < counter; j++) {
                 result[j] = tickets[j];
@@ -319,7 +394,6 @@ contract Lottery {
             rewardsDistributed[i] = roundRewardsDistributed[i];
         }
     }
-
 
     function _pseudoRandomNumber(uint256 max) private view returns (uint256) {
         return (uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender))) % max) + 1;
