@@ -435,8 +435,8 @@
                     const { chainId } = await provider.getNetwork();
             	     userAddy = await signer.getAddress();
                     document.getElementById('YourAddressbsc').innerText = `Your connected address: ${userAddy}`;
-                    if (chainId !== 42161) { // Check if the chain ID is not 324
-                                        alert('You are on the wrong network. Please switch to the correct network. Arbitrum One Blockchain, ChainID: 42161');
+                    if (chainId !== 97) { // Check if the chain ID is not 324
+                                        alert('You are on the wrong network. Please switch to the correct network. BSC Tesnet, ChainID: 97');
                                         // Optionally, try to switch the user's network using window.ethereum.request
                                         return;
                     }
@@ -805,10 +805,9 @@
             	     userAddy = await this.signer2.getAddress();
             	     
                     document.getElementById('YourAddressbsc').innerText = `Your connected address: ${userAddy}`;
-                    if (chainId !== 42161) { // Check if the chain ID is not 324
-                                        alert('You are on the wrong network. Please switch to the correct network. Arbitrum One Blockchain, ChainID: 42161');
+                    if (chainId !== 97) { // Check if the chain ID is not 324
+                                        alert('You are on the wrong network. Please switch to the correct network. BSC Tesnet, ChainID: 97');
                                         // Optionally, try to switch the user's network using window.ethereum.request
-                                        return;
                     }
                     console.log("Wallet connected");
                 } catch (error) {
@@ -1527,10 +1526,10 @@
                     const { chainId } = await provider.getNetwork();
             	     userAddy = await signer.getAddress();
                     document.getElementById('YourAddressbsc').innerText = `Your connected address: ${userAddy}`;
-                    if (chainId !== 42161) { // Check if the chain ID is not 324
-                                        alert('You are on the wrong network. Please switch to the correct network. Arbitrum One Blockchain, ChainID: 42161');
+                    
+                    if (chainId !== 97) { // Check if the chain ID is not 324
+                                        alert('You are on the wrong network. Please switch to the correct network. BSC Tesnet, ChainID: 97');
                                         // Optionally, try to switch the user's network using window.ethereum.request
-                                        return;
                     }
                     console.log("Wallet connected");
                 } catch (error) {
