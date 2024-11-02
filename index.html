@@ -127,9 +127,10 @@
 		<h2>Middle Section</h2>
 		<p>This is the middle section, ideal for primary content or more detailed information.</p>
 		
-		
+		connectWallet
 <div id="YourAddressbsc">Your connected BSC address: ? Connect Wallet</div>
 		
+    <button id="getConnectWallet">Connect Wallet</button><br>
 <div id="YourBalanceBNBTC">Your BNBTC Balance: ? Connect Wallet</div>
 <div id="YourBalanceBNB">Your BNB Balance: ? Connect Wallet</div>
 <div id="YourAllowanceBNBTC">Your BNBTC Allowance: ? Connect Wallet</div>
@@ -1024,7 +1025,7 @@
                 alert('MetaMask is not installed. Please install it to use this feature.');
             }
 		
-	}  ,
+	},
 	  async GetStats(){
 		    
 		   if (typeof window.ethereum !== 'undefined') {
@@ -1331,6 +1332,10 @@
     
     
 
+     document.getElementById('getConnectWallet').addEventListener('click', function() {
+	  app2.GetStats();
+  });
+  
     
     document.getElementById('GetLottoTotal').addEventListener('click', function() {
     app2.getAuctionTotal(); // Call the method with specific parameters
@@ -1343,8 +1348,7 @@
   });
     document.getElementById('getTestnetTokens').addEventListener('click', function() {
     app2.getTestnetTokens(); // Call the method with specific parameters
-  });
-  
+  }); 
   
     
     document.getElementById('approveTokenBtnBNBTC2').addEventListener('click', function() {
